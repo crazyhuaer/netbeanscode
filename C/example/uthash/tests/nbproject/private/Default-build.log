@@ -1,0 +1,96 @@
+cc -I../src  -g -Wall   -o test1 test1.c 
+cc -I../src  -g -Wall   -o test2 test2.c 
+cc -I../src  -g -Wall   -o test3 test3.c 
+cc -I../src  -g -Wall   -o test4 test4.c 
+cc -I../src  -g -Wall   -o test5 test5.c 
+cc -I../src  -g -Wall   -o test6 test6.c 
+cc -I../src  -g -Wall   -o test7 test7.c 
+cc -I../src  -g -Wall   -o test8 test8.c 
+cc -I../src  -g -Wall   -o test9 test9.c 
+cc -I../src  -g -Wall   -o test10 test10.c 
+cc -I../src  -g -Wall   -o test11 test11.c 
+cc -I../src  -g -Wall   -o test12 test12.c 
+cc -I../src  -g -Wall   -o test13 test13.c 
+cc -I../src  -g -Wall   -o test14 test14.c 
+cc -I../src  -g -Wall   -o test15 test15.c 
+cc -I../src  -g -Wall   -o test16 test16.c 
+cc -I../src  -g -Wall   -o test17 test17.c 
+cc -I../src  -g -Wall   -o test18 test18.c 
+cc -I../src  -g -Wall   -o test19 test19.c 
+cc -I../src  -g -Wall   -o test20 test20.c 
+cc -I../src  -g -Wall   -o test21 test21.c 
+cc -I../src  -g -Wall   -o test22 test22.c 
+cc -I../src  -g -Wall   -o test23 test23.c 
+cc -I../src  -g -Wall   -o test24 test24.c 
+cc -I../src  -g -Wall   -o test25 test25.c 
+cc -I../src  -g -Wall   -o test26 test26.c 
+cc -I../src  -g -Wall   -o test27 test27.c 
+cc -I../src  -g -Wall   -o test28 test28.c 
+cc -I../src  -g -Wall   -o test29 test29.c 
+cc -I../src  -g -Wall   -o test30 test30.c 
+cc -I../src  -g -Wall   -o test31 test31.c 
+cc -I../src  -g -Wall   -o test32 test32.c 
+cc -I../src  -g -Wall   -o test33 test33.c 
+cc -I../src  -g -Wall   -o test34 test34.c 
+cc -I../src  -g -Wall   -o test35 test35.c 
+cc -I../src  -g -Wall   -o test36 test36.c 
+cc -I../src  -g -Wall   -o test37 test37.c 
+cc -I../src  -g -Wall   -o test38 test38.c 
+cc -I../src  -g -Wall   -o test39 test39.c 
+cc -I../src  -g -Wall   -o test40 test40.c 
+cc -I../src  -g -Wall   -o test41 test41.c 
+cc -I../src  -g -Wall   -o test42 test42.c 
+cc -I../src  -g -Wall   -o test43 test43.c 
+cc -I../src  -g -Wall   -o test44 test44.c 
+cc -I../src  -g -Wall   -o test45 test45.c 
+cc -I../src  -g -Wall   -o test46 test46.c 
+cc -I../src  -g -Wall   -o test47 test47.c 
+cc -I../src  -g -Wall   -o test48 test48.c 
+cc -I../src  -g -Wall   -o test49 test49.c 
+cc -I../src  -g -Wall   -o test50 test50.c 
+cc -I../src  -g -Wall   -o test51 test51.c 
+cc -I../src  -g -Wall   -o test52 test52.c 
+cc -I../src  -g -Wall   -o test53 test53.c 
+cc -I../src  -g -Wall   -o test54 test54.c 
+cc -I../src  -g -Wall   -o test55 test55.c 
+cc -I../src  -g -Wall   -o test56 test56.c 
+cc -I../src  -g -Wall   -o test57 test57.c 
+cc -I../src  -g -Wall   -o test58 test58.c 
+cc -I../src  -g -Wall   -o test59 test59.c 
+cc -I../src  -g -Wall   -o test60 test60.c 
+cc -I../src  -g -Wall   -o test61 test61.c 
+cc -I../src  -g -Wall   -o test62 test62.c 
+cc -I../src  -g -Wall   -o test63 test63.c 
+cc -I../src  -g -Wall   -o test64 test64.c 
+cc -I../src  -g -Wall   -o test65 test65.c 
+cc -I../src  -g -Wall   -o test66 test66.c 
+cc -I../src  -g -Wall   -o test67 test67.c 
+cc -I../src  -g -Wall   -o test68 test68.c 
+cc -I../src  -g -Wall   -o test69 test69.c 
+cc -I../src  -g -Wall   -o test70 test70.c 
+cc -I../src  -g -Wall   -o test71 test71.c 
+cc -I../src  -g -Wall   -o test72 test72.c 
+cc -I../src  -g -Wall   -o test73 test73.c 
+cc -I../src  -g -Wall   -o test74 test74.c 
+cc -I../src  -g -Wall   -o test75 test75.c 
+cc -I../src  -g -Wall   -o test76 test76.c 
+cc -I../src  -g -Wall   -o test77 test77.c 
+cc -I../src  -g -Wall   -o test78 test78.c 
+cc -I../src  -g -Wall   -o test79 test79.c 
+cc -I../src  -g -Wall   -o test80 test80.c 
+cc -I../src  -g -Wall   -o test81 test81.c 
+cc -I../src  -g -Wall   -o test82 test82.c 
+cc -I../src  -g -Wall   -o test83 test83.c 
+cc -I../src  -g -Wall   -o test84 test84.c 
+cc -I../src  -g -Wall   -o emit_keys emit_keys.c 
+cc -I../src  -g -Wall   -DHASH_USING_NO_STRICT_ALIASING -fno-strict-aliasing -o hashscan hashscan.c 
+cc -I../src  -g -Wall   -DHASH_BLOOM=16 -o sleep_test sleep_test.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_BER -o keystat.BER keystat.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_SAX -o keystat.SAX keystat.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_FNV -o keystat.FNV keystat.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_OAT -o keystat.OAT keystat.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_JEN -o keystat.JEN keystat.c 
+cc -I../src  -g -Wall   -DHASH_FUNCTION=HASH_SFH -o keystat.SFH keystat.c 
+cc -I../src  -g -Wall   -DHASH_USING_NO_STRICT_ALIASING -fno-strict-aliasing -DHASH_FUNCTION=HASH_MUR -o keystat.MUR keystat.c 
+perl ./do_tests
+84 tests conducted, 0 failed.

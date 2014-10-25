@@ -1,0 +1,3 @@
+asciidoc -a toc2 todo.txt
+make: asciidoc: Command not found
+make: *** [todo.html] Error 127

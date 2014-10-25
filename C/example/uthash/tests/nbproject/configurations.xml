@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <in>emit_keys.c</in>
+      <in>hashscan.c</in>
+      <in>keystat.c</in>
+      <in>sleep_test.c</in>
+      <in>test1.c</in>
+      <in>test10.c</in>
+      <in>test11.c</in>
+      <in>test12.c</in>
+      <in>test13.c</in>
+      <in>test14.c</in>
+      <in>test15.c</in>
+      <in>test16.c</in>
+      <in>test17.c</in>
+      <in>test18.c</in>
+      <in>test19.c</in>
+      <in>test2.c</in>
+      <in>test20.c</in>
+      <in>test21.c</in>
+      <in>test22.c</in>
+      <in>test23.c</in>
+      <in>test24.c</in>
+      <in>test25.c</in>
+      <in>test26.c</in>
+      <in>test27.c</in>
+      <in>test28.c</in>
+      <in>test29.c</in>
+      <in>test3.c</in>
+      <in>test30.c</in>
+      <in>test31.c</in>
+      <in>test32.c</in>
+      <in>test33.c</in>
+      <in>test34.c</in>
+      <in>test35.c</in>
+      <in>test36.c</in>
+      <in>test37.c</in>
+      <in>test38.c</in>
+      <in>test39.c</in>
+      <in>test4.c</in>
+      <in>test40.c</in>
+      <in>test41.c</in>
+      <in>test42.c</in>
+      <in>test43.c</in>
+      <in>test44.c</in>
+      <in>test45.c</in>
+      <in>test46.c</in>
+      <in>test47.c</in>
+      <in>test48.c</in>
+      <in>test49.c</in>
+      <in>test5.c</in>
+      <in>test50.c</in>
+      <in>test51.c</in>
+      <in>test52.c</in>
+      <in>test53.c</in>
+      <in>test54.c</in>
+      <in>test55.c</in>
+      <in>test56.c</in>
+      <in>test57.c</in>
+      <in>test58.c</in>
+      <in>test59.c</in>
+      <in>test6.c</in>
+      <in>test60.c</in>
+      <in>test61.c</in>
+      <in>test62.c</in>
+      <in>test63.c</in>
+      <in>test64.c</in>
+      <in>test65.c</in>
+      <in>test66.c</in>
+      <in>test67.c</in>
+      <in>test68.c</in>
+      <in>test69.c</in>
+      <in>test7.c</in>
+      <in>test70.c</in>
+      <in>test71.c</in>
+      <in>test72.c</in>
+      <in>test73.c</in>
+      <in>test74.c</in>
+      <in>test75.c</in>
+      <in>test76.c</in>
+      <in>test77.c</in>
+      <in>test78.c</in>
+      <in>test79.c</in>
+      <in>test8.c</in>
+      <in>test80.c</in>
+      <in>test81.c</in>
+      <in>test82.c</in>
+      <in>test83.c</in>
+      <in>test84.c</in>
+      <in>test9.c</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-g"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>../src</pElem>
+            </incDir>
+          </cTool>
+        </makeTool>
+      </makefileType>
+      <item path="emit_keys.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="hashscan.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+          <preprocessorList>
+            <Elem>HASH_USING_NO_STRICT_ALIASING</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="keystat.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+          <preprocessorList>
+            <Elem>HASH_FUNCTION=HASH_MUR</Elem>
+            <Elem>HASH_USING_NO_STRICT_ALIASING</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="sleep_test.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+          <preprocessorList>
+            <Elem>HASH_BLOOM=16</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="test1.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test10.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test11.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test12.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test13.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test14.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test15.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test16.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test17.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test18.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test19.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test2.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test20.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test21.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test22.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test23.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test24.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test25.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test26.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test27.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test28.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test29.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test3.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test30.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test31.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test32.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test33.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test34.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test35.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test36.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test37.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test38.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test39.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test4.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test40.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test41.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test42.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test43.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test44.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test45.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test46.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test47.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test48.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test49.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test5.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test50.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test51.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test52.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test53.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test54.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test55.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test56.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test57.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test58.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test59.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test6.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test60.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test61.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test62.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test63.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test64.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test65.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test66.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test67.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test68.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test69.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test7.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test70.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test71.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test72.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test73.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test74.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test75.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test76.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test77.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test78.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test79.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test8.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test80.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test81.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test82.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test83.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test84.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="test9.c" ex="false" tool="0" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
