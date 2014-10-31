@@ -11,8 +11,13 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-
+    
+//////////////////////////////////////////////////////////////////////////////
+// header file.
+#include <stdio.h>
+#include <stdlib.h>
+#include "uthash.h"
+    
 
 
 #ifdef	__cplusplus
