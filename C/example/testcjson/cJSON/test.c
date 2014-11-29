@@ -127,6 +127,32 @@ void create_objects()
 
 }
 
+int CheckUserExist(char *str){
+    int ret = 0;
+    char *tmp = str;
+    int index = IndexOf(tmp,".");
+    if (index > 0) {
+        tmp += index + 1;
+        
+        index = IndexOf(tmp,".");
+        if (index > 0) {
+            tmp += index + 1;
+            
+            index = IndexOf(tmp,".");
+            if (index > 0) {
+                tmp += index +1;
+                ret = atoi(tmp);
+            } else {
+                return -1;
+            }      
+        } else {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+}
+
 int main (int argc, const char * argv[]) {
 	/* a bunch of json: */
 	char text1[]="{\n\"name\": \"Jack (\\\"Bee\\\") Nimble\", \n\"format\": {\"type\":       \"rect\", \n\"width\":      1920, \n\"height\":     1080, \n\"interlace\":  false,\"frame rate\": 24\n}\n}";	
@@ -197,7 +223,7 @@ int main (int argc, const char * argv[]) {
             while (groupjson)
             {
                 test= groupjson->valueint;
-                printf("%d",test); 
+                printf("%d ",test); 
                 groupjson = groupjson->next;
             }
             
