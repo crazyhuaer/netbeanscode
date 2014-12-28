@@ -13,21 +13,30 @@ extern "C" {
 #endif
     
 #include "include/uthash.h"
-
+#include <glib-2.0/glib.h>
     //////////////////////////////////////////////////////////////////////////////
     typedef struct _student_{
         int id;
-        char *username;
+        char *str;
         UT_hash_handle hh;
-    }stStudent;
+    }stIntStr;
+    
+    typedef struct _hashtable_{
+        int             nodetype;   // 节点类型 1:int 2:string 3:point 4:struct 
+        unsigned int    size;
+        unsigned int    current;
+        stIntStr        **headNode;
+        stIntStr        *NodeSpace[1];
+    }stHashTable;
     
     //////////////////////////////////////////////////////////////////////////////
     // global var
-    stStudent *sTable;
+    stIntStr *sTable;
+    stHashTable *hHashTable;
     
     //////////////////////////////////////////////////////////////////////////////
+    void fInitData(int length);
     void fPrintWelcome();
-
 
 #ifdef	__cplusplus
 }

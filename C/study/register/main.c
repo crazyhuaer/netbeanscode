@@ -16,107 +16,156 @@
 void fPrintWelcome(){
     printf("//////////////////////////////////////////////////////\n");
     printf("****\tWelcome!\n");
-    printf("****\t1.Add a new man.\n");
-    printf("****\t2.Find a man.\n");
-    printf("****\t3.Modify a man by id.\n");
-    printf("****\t4.Delete a man by id.\n");
-    printf("****\t5.Delete all man.\n");
-    printf("****\t9.Print all members.\n");
+    printf("****\t1.Add a new key int item.\n");
+    printf("****\t2.Find a key int item.\n");
+    printf("****\t3.Modify a item by id.\n");
+    printf("****\t4.Delete a item by id.\n");
+    printf("****\t5.Delete all item.\n");   
+    printf("****\t9.Print all items.\n");
+    printf("****\t11.Add a new key str item.\n");
+    printf("****\t12.find a key str item.\n");
+    printf("****\t99.Test the biggest length.\n");
     printf("****\t0.Exit\n");
 }
 
-void fInitData(){
+void fInitData(int length){
     sTable = NULL;
+    hHashTable = (stHashTable*) malloc(sizeof (stHashTable) + length * sizeof (stIntStr));
+    hHashTable->headNode = &sTable;
+    hHashTable->current = 0;
+    hHashTable->size = length;
+    hHashTable->NodeSpace[0] = (stIntStr*) (hHashTable + 1);
 }
 
 /*
  * 
  */
+typedef struct {
+    char *name;
+    int shoe_size;
+} Person;
+
 int main(int argc, char** argv) {
 
-    int uid;
-    stStudent *s;
+    printf("sizeof(int):%lu\n",sizeof(long));
+    
+    GList *list = NULL;
+    
+    Person *tom = (Person*)malloc(sizeof(Person));
+    tom->name = "Tom";
+    tom->shoe_size = 12;
+    list = g_list_append(list,tom);
+    
+    Person * fred = g_new(Person,1);
+    fred->name = "fred";
+    fred->shoe_size = 15;
+    list = g_list_append(list,tom);
+    
+    printf("The first item is '%s'\n",(char *)g_list_first(list)->data);
+    
+//    list = g_list_append(list,"hello");
+//    list = g_list_append(list,"what");
+//    printf("The first item is '%s'\n",g_list_first(list)->data);
+//
+//    printf("The first item is '%s'\n",g_list_first(list->next)->data);
+//    guint len = g_slist_length(list);
+//    printf("Th list length:%u\n",len);
+    g_list_free(list);
+    free(tom);
+    g_free(fred);
+    return 0;
+    
+    long int uid;
+    stIntStr *s;
     char yesOrno;
-    char command[3];
+    int  command_len;
+    char command[10];
     char iIsRunning = 0x01;
 
     // Init the data
-    fInitData();
-    
+    fInitData(100);
+
     while (iIsRunning) {
 
         fPrintWelcome();
   
         fgets(command, sizeof(command), stdin);
 
-        if (command[0] >= '0' && command[0] <= '9') {
-            switch (command[0]) {
+        //if (command[0] >= '0' && command[0] <= '9') {
+        if (atoi(command) >= 0 && atoi(command) <= 99) {
+            switch (atoi(command)) {
                 // exit.
-                case '0':
+                case 0:
                 {
                     iIsRunning = 0x00;
                     break;
                 }
+                
                 // add a man
-                case '1':
+                case 1:
                 {
                     printf("Input userid:");
-                    scanf("%d",&uid);
+                    scanf("%ld",&uid);
                     
-                    HASH_FIND_INT(sTable,&uid,s);
+                    HASH_FIND_INT(*(hHashTable->headNode),&uid,s);
                     
                     if (s == NULL) {
-                        s = (stStudent *)malloc(sizeof(stStudent));
+                        //s = (stIntStr *)malloc(sizeof(stIntStr));
+                        s = hHashTable->NodeSpace[hHashTable->current];
                         s->id = uid;
-                        s->username = malloc(sizeof(char) * 10);
+                        s->str = malloc(sizeof(char) * 10);
                         
-                        printf("Input username:");
-                        scanf("%s",s->username);
+                        printf("Input str:");
+                        scanf("%s",s->str);
                         
-                        HASH_ADD_INT(sTable,id,s);
-                        printf("add uid:%d,username:%s success.\n",s->id,s->username);
+                        HASH_ADD_INT(*(hHashTable->headNode),id,s);
+                        hHashTable->current++;
+                        printf("add uid:%d,str:%s success.\n",s->id,s->str);
                     } else {
-                        printf("This id is exist.uid:%d Username is %s.\n",s->id,s->username);
+                        printf("This id is exist.uid:%d Username is %s.\n",s->id,s->str);
                     } 
+                    printf("sTable:%ld,HashTable->headNode:%ld,address:%p,ss:%p,sss:%p\n",\
+                            sizeof(sTable),sizeof(hHashTable->headNode),sTable,hHashTable->headNode,*(hHashTable->headNode));
                     break;
                 }
+                
                 // find a man
-                case '2':
+                case 2:
                 {
                     printf("Input userid:");
-                    scanf("%d",&uid);
+                    scanf("%ld",&uid);
                     
                     HASH_FIND_INT(sTable,&uid,s);
                     
                     if (s == NULL) {
-                        printf("This is is not exist.Do you want to add it?\n");
+                        printf("This is is not exist.Do you want to add it?");
                         
                         // clear the stdin
                         setbuf(stdin, NULL);
                         
                         scanf("%c",&yesOrno);
                         if (yesOrno == 'Y' || yesOrno == 'y') {
-                            s = (stStudent *)malloc(sizeof(stStudent));
+                            s = (stIntStr *)malloc(sizeof(stIntStr));
                             s->id = uid;
-                            s->username = malloc(sizeof(char) * 10);
+                            s->str = malloc(sizeof(char) * 10);
 
-                            printf("Input username:");
-                            scanf("%s",s->username);
+                            printf("Input str:");
+                            scanf("%s",s->str);
 
                             HASH_ADD_INT(sTable,id,s);
-                            printf("add uid:%d,username:%s success.\n",s->id,s->username);
+                            printf("add uid:%d,str:%s success.\n",s->id,s->str);
                         }
                     } else {
-                        printf("This uid:%d Username:%s.\n",s->id,s->username);
+                        printf("This uid:%d Username:%s.\n",s->id,s->str);
                     } 
                     break;
                 }
                 
                 // modify a man.
-                case '3':
+                case 3:
                 {
                     printf("Input modify userid:");
-                    scanf("%d",&uid);
+                    scanf("%ld",&uid);
                     
                     HASH_FIND_INT(sTable,&uid,s);
                     
@@ -125,12 +174,12 @@ int main(int argc, char** argv) {
                         
                         s->id = uid;
                         
-                        printf("Input username:");
-                        scanf("%s",s->username);
+                        printf("Input str:");
+                        scanf("%s",s->str);
                         
                         HASH_ADD_INT(sTable,id,s);
                         
-                        printf("modify uid:%d,username:%s success.\n",s->id,s->username);
+                        printf("modify uid:%d,str:%s success.\n",s->id,s->str);
                     } else {
                         printf("This id is not exist.\n");
                     } 
@@ -138,16 +187,19 @@ int main(int argc, char** argv) {
                 }
                 
                 // delete a man
-                case '4':
+                case 4:
                 {
                     printf("Input delete userid:");
-                    scanf("%d",&uid);
+                    scanf("%ld",&uid);
                     
                     HASH_FIND_INT(sTable,&uid,s);
                     
                     if (s != NULL) {
                         HASH_DEL(sTable,s);
-                        printf("delete uid:%d,username:%s success.\n",s->id,s->username);
+                        printf("delete uid:%d,str:%s success.\n", s->id, s->str);
+                        
+                        free(s->str);
+                        free(s);
                     } else {
                         printf("This id is not exist.\n");
                     } 
@@ -155,7 +207,7 @@ int main(int argc, char** argv) {
                 }
 
                 // delete all man
-                case '5':
+                case 5:
                 {
                     printf("This is is not exist.Do you want to add it?\n");
 
@@ -164,11 +216,11 @@ int main(int argc, char** argv) {
 
                     scanf("%c", &yesOrno);
                     if (yesOrno == 'Y' || yesOrno == 'y') {
-                        stStudent *tmp;
+                        stIntStr *tmp;
 
                         HASH_ITER(hh, sTable, s, tmp) {
                             HASH_DEL(sTable, s);
-                            free(s->username);
+                            free(s->str);
                             free(s);
                         }
                         printf("delete all success.\n");
@@ -177,12 +229,108 @@ int main(int argc, char** argv) {
                 }     
                 
                 // print all data
-                case '9':
+                case 9:
                 {
-                    for(s=sTable; s != NULL; s=(stStudent*)(s->hh.next)){
-                        printf("user id:%d,name:%s\n",s->id,s->username);
+                    int count = 0;
+                    for(s=(*hHashTable->headNode); s != NULL; s=(stIntStr*)(s->hh.next)){
+                        //printf("user id:%d,name:%s\n",s->id,s->str);
+                        count++;
                     }
 
+                    printf("count:%d\n",hHashTable->current);
+                    
+                    break;
+                }
+                
+                //////////////////////////////////////////////////////////////////////////////
+                // add a string key
+                case 11:
+                {
+                    char *str = malloc(sizeof(char) * 10);
+                    printf("Input str:");
+                    scanf("%s",str);
+
+                    HASH_FIND_STR(*(hHashTable->headNode),str,s);
+                    
+                    if (s == NULL) {
+                        printf("Input userid:");
+                        scanf("%ld",&uid);
+                        
+                        s = hHashTable->NodeSpace[hHashTable->current];
+                        
+                        s->id = uid;
+                        s->str = str;
+
+                        HASH_ADD_STR(*(hHashTable->headNode),str,s);
+                        hHashTable->current++;
+                        printf("add uid:%d,str:%s success.\n",s->id,s->str);
+                    } else {
+                        printf("This id is exist.uid:%d Username is %s.\n",s->id,s->str);
+                        free(str);
+                    } 
+                    break;
+                }
+                
+                // find a man
+                case 12:
+                {
+                    char *str = malloc(sizeof(char) * 10);
+                    printf("Input str:");
+                    scanf("%s",str);
+                    
+                    HASH_FIND_STR(*(hHashTable->headNode),str,s);
+                    
+                    if (s == NULL) {
+                        printf("This is is not exist.Do you want to add it(y/Y or n/N)?");
+                        
+                        // clear the stdin
+                        setbuf(stdin, NULL);
+                        
+                        scanf("%c",&yesOrno);
+                        if (yesOrno == 'Y' || yesOrno == 'y') {
+                            printf("Input userid:");
+                            scanf("%ld",&uid);
+
+                            s = hHashTable->NodeSpace[hHashTable->current];
+
+                            s->id = uid;
+                            s->str = str;
+
+                            HASH_ADD_STR(*(hHashTable->headNode),str,s);
+                            hHashTable->current++;
+                            printf("add uid:%d,str:%s success.\n",s->id,s->str);
+                        }
+                    } else {
+                        printf("This uid:%d Username:%s.\n",s->id,s->str);
+                    } 
+                    break;
+                }
+                
+                
+                // test the biggest length.
+                case 99:
+                {
+                    {
+                        for (uid = 0; uid < 30000000; uid++) {
+                            
+                            HASH_FIND_INT(sTable, &uid, s);
+
+                            if (s == NULL) {
+                                s = (stIntStr *) malloc(sizeof (stIntStr));
+                                
+                                s->id = uid;
+                                s->str = malloc(sizeof (char) * 10);
+
+                                sprintf(s->str,"neo%ld",uid);
+
+                                HASH_ADD_INT(sTable, id, s);
+                                hHashTable->current++;
+                            } else {
+                                printf("This id is exist.uid:%d Username is %s.\n", s->id, s->str);
+                            } 
+                            
+                        }
+                    }
                     break;
                 }
                 
@@ -197,7 +345,18 @@ int main(int argc, char** argv) {
         
         // clear the stdin.
         setbuf(stdin, NULL);
-        command[1] = '\0';
+        command_len = strlen(command);
+        command[command_len] = '\0';
     }
+
+    stIntStr *tmp;
+
+    HASH_ITER(hh, sTable, s, tmp) {
+        HASH_DEL(sTable, s);
+        free(s->str);
+    }
+    free(hHashTable);
+    printf("delete all success.\n");
+    
     return (EXIT_SUCCESS);
 }

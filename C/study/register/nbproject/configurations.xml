@@ -37,6 +37,15 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>/usr/include/glib-2.0</pElem>
+            <pElem>/usr/lib/x86_64-linux-gnu/glib-2.0/include</pElem>
+          </incDir>
+        </cTool>
+        <linkerTool>
+          <commandLine>-lglib-2.0</commandLine>
+        </linkerTool>
       </compileType>
       <item path="include/uthash.h" ex="false" tool="3" flavor2="0">
       </item>
