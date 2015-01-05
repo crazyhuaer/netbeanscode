@@ -17,17 +17,20 @@ int main(int argc, char** argv) {
     int i;
     
     // system init
-    SetupSignal();
-    
-    // setup server socket
-    int SmartPort = 8087;
-    int fd = lib_create_server_socket("*",SmartPort);
-    if (fd < 0) {
+    ret = InitSystem();
+    if(ret < 0){
         return -1;
     }
     
+    // setup server socket
+//    int SmartPort = 8087;
+//    int fd = lib_create_server_socket("*",SmartPort);
+//    if (fd < 0) {
+//        return -1;
+//    }
     
     
+    DestorySystem();
     return (EXIT_SUCCESS);
 }
 

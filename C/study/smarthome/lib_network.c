@@ -8,6 +8,7 @@ int lib_create_server_socket(const char* pIp, int nPort) {
     // 创建TCP socket
     if (-1 == (nFd = socket(AF_INET, SOCK_STREAM, 0))) {
         //Error("socket create error: %s", strerror(errno));
+        syslog(LOG_INFO,"socket create error: %s",strerror(errno));
         return 0;
     }
 

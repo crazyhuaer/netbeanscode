@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/base.o \
 	${OBJECTDIR}/lib_network.o \
 	${OBJECTDIR}/lib_system.o \
+	${OBJECTDIR}/log.o \
 	${OBJECTDIR}/main.o
 
 
@@ -64,6 +66,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/smarthome: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/smarthome ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/base.o: base.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/base.o base.c
+
 ${OBJECTDIR}/lib_network.o: lib_network.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -73,6 +80,11 @@ ${OBJECTDIR}/lib_system.o: lib_system.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib_system.o lib_system.c
+
+${OBJECTDIR}/log.o: log.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/log.o log.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}

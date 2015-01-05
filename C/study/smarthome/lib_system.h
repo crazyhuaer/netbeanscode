@@ -14,7 +14,14 @@ extern "C" {
 
 #include <signal.h>
 #include <stdlib.h>
+#include "base.h"
+#include "main.h" 
 
+    int InitSystem();
+    void InitSystemVar();
+    
+    void DestorySystem();
+    void SetupSignal();
 
 #ifdef	__cplusplus
 }
