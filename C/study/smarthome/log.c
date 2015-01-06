@@ -2,8 +2,6 @@
 
 #include "log.h"
 
-FILE *file;
-
 void Print(int level,const char* msg, ...)
 {
     if (msg)
@@ -25,12 +23,12 @@ void Print(int level,const char* msg, ...)
             }
             case 1:
             {
-                DEBUG("%s%s%s",timeString,"[Debug]",buf);
+                LogPrintf("%s%s%s",timeString,"[Debug]",buf);
                 break;
             }
             case 2:
             {
-                ERROR("%s%s%s",timeString,"[Error]",buf);
+                LogPrintf("%s%s%s",timeString,"[Error]",buf);
                 break;
             }
             default:
@@ -52,23 +50,22 @@ void LogPrintf(const char* msg, ...)
         va_end(argp);
         
         // TODO write it to the log file or whatever
-        printf("%s\n",buf);
-        //fputs(buf,logfile);
+        fputs(buf,logfile);
     }
 }
 
 void OpenLogFile(char *logpath) {
     
-    logfile = fopen(LOGFILE, "a");
+    logfile = fopen(LOGFILE, "a+");
 
-    if (file == NULL) {
-        printf("can't open file %s\n",logpath);
+    if (logfile == NULL) {
+        printf("can't open file %s:%s\n",logpath,strerror(errno));
         exit(-1);
     }
 }
 
 void CloseLogFile(){
-    if (file) {
-        fclose(file);
+    if (logfile) {
+        fclose(logfile);
     }    
 }

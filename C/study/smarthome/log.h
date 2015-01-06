@@ -33,21 +33,21 @@ void Print(int level,const char* msg, ...);
 extern void OpenLogFile(char *logpath);
 
 #if DEBUG_PRINT_ENABLED
-    #define DEBUG_PRINT Print
+    #define INFO Print
 #else
-    #define DEBUG_PRINT(format, args...) ((void)0)
+    #define INFO(format, args...) ((void)0)
 #endif
 
 
 #if DEBUG_LOG_ENABLED
-    #define DEBUG LogPrintf
+    #define DEBUG Print
 #else
     #define DEBUG(format, args...) ((void)0)
 #endif
 
 
 #if ERROR_LOG_ENABLED
-    #define ERROR LogPrintf
+    #define ERROR Print
 #else
     #define ERROR(format, args...) ((void)0)
 #endif    

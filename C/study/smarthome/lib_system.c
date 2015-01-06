@@ -8,22 +8,21 @@ int InitSystem(){
     InitSystemVar();
     InitLogSystem();
     SetupSignal();
-    DestorySystem();
 }
 
 void InitSystemVar(){
-    LogCreated = false;
-    log_path = newString("/home/topseten/log/test.log");
-    if (log_path == NULL) {
-        free(log_path);
-        printf("error:%s\n",strerror(errno));
-        exit(-1);
-    }
+
 }
 
 // open the log file
 int InitLogSystem(){ 
-    DEBUG_PRINT(0,"%s%s","This is an error of log file.","do you have a list for this?");
+    
+    if (DEBUG_LOG_ENABLED || ERROR_LOG_ENABLED) {
+        OpenLogFile(log_path);
+    }
+
+    // test log system
+    INFO(2,"%s%s\n","This is an error of log file.","do you have a list for this?");
 }
 
 // process the system signals
