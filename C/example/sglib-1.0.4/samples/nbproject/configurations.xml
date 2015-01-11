@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="doc" displayName="doc" projectFiles="true">
+      <itemPath>../doc/GenerateDoc</itemPath>
+      <itemPath>../doc/index.html</itemPath>
+      <itemPath>../doc/index.html.sss</itemPath>
+      <itemPath>../doc/sssi</itemPath>
+    </logicalFolder>
+    <df root="." name="0">
+      <in>arraysort.c</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+    <Elem>../doc</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>..</pElem>
+            </incDir>
+          </cTool>
+        </makeTool>
+      </makefileType>
+      <item path="../doc/GenerateDoc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../doc/index.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../doc/index.html.sss" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../doc/sssi" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="arraysort.c" ex="false" tool="0" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -1,0 +1,4 @@
+gcc -I.. arraysort.c
+a.out 6 7 3 4 1 4 1 3 5
+make: a.out: Command not found
+make: *** [arraysort] Error 127
