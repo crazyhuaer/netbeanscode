@@ -24,10 +24,12 @@ void InitSystemVar(){
     
     char buf[1024];
     int count;
+    memset(buf,0,1024);
+    
     count = readlink( "/proc/self/exe", buf,1024);
     if ( count < 0 || count >=1024) 
     {
-        printf( "获取配置文件基础路径发生错误\n" );
+        printf( "获取配置文件基础路径发生错误\n" ); 
     }
     while(buf[ count ]!='/')
         count--;
@@ -41,11 +43,13 @@ void InitSystemVar(){
     memset(config,0,sizeof(struct config_t));
 }
 
-void InitConfigSystem(){
-    printf("\tL__________System params:\n");
-    printf("\tL__________Web IP:192.168.2.130\n");
-    
+void InitConfigSystem(){ 
+    config->server.serverip = ReadConfigfile(confPath,"serverip");
     config->server.serverport = GetConfInt(confPath,"serverport");
+
+    printf("\tL__________System params:\n");
+    printf("\tL__________Web IP:%s\n",config->server.serverip);
+    printf("\tL__________Web Port:%d\n",config->server.serverport);
 }
 
 // open the log file
@@ -82,18 +86,6 @@ void sig_handler(int signo) {
 
 // process the system signals
 void SetupSignal() {
-    /*
-    signal(SIGPIPE, SIG_IGN);
-    struct sigaction sa;
-
-    sa.sa_handler = SIG_IGN;
-    sa.sa_flags = 0;
-
-    if (sigemptyset(&sa.sa_mask) == -1 ||
-            sigaction(SIGPIPE, &sa, 0) == -1) {
-        exit(-1);
-    }
-     * */
     if (signal(SIGINT, sig_handler) == SIG_ERR)
         printf("\ncan't catch SIGINT\n");
     if (signal(SIGPIPE, sig_handler) == SIG_ERR)
@@ -118,5 +110,13 @@ void DestorySystem(){
     }
     
     CloseLogFile();
+    
+    if (config){
+        if(config->server.serverip){
+            freeData(config->server.serverip);
+        }
+        
+        freeData(config);
+    }
     exit(0);
 }

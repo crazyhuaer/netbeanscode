@@ -14,6 +14,7 @@ char *newData(int size){
 char *newString(char* s){
     char *d = malloc(strlen(s) +1);
     if (d == NULL) return NULL;
+    memset(d,0,(strlen(s)+1));
     strcpy(d,s);
     return d;
 }
@@ -110,6 +111,7 @@ char *ReadConfigfile(char *fileName, char *item) {
     }
     fclose(fp);
     char * rtn=(char *)malloc(strlen(context)+1);
+    memset(rtn,0,strlen(context)+1);
     strcpy(rtn,context);
 
     char *tmp=rtn;

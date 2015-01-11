@@ -28,9 +28,9 @@ int main(int argc, char** argv) {
     }
     
     // test log system
-    INFO("%s%s","This is an error of log file.","do you have a list for this?\n");
-    ERROR("%s%s","This is an error of log file.","do you have a list for this?\n");
- 
+//    INFO("%s%s","This is an error of log file.","do you have a list for this?\n");
+//    ERROR("%s%s","This is an error of log file.","do you have a list for this?\n");
+
     // setup server socket
 //    int SmartPort = 1249;
 //    int fd = lib_create_server_socket("*",SmartPort);

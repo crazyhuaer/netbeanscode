@@ -24,7 +24,6 @@
       <itemPath>lib_system.c</itemPath>
       <itemPath>log.c</itemPath>
       <itemPath>main.c</itemPath>
-      <itemPath>ccl/strings.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -54,8 +53,6 @@
       <item path="base.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="ccl/strings.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -101,8 +98,6 @@
       <item path="base.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="ccl/strings.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
       </item>

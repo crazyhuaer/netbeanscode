@@ -33,6 +33,7 @@ extern "C" {
         } system;
 
         struct {
+            char *serverip;
             int serverport;
         } server;
     };
