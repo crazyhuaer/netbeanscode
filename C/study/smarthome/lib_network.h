@@ -23,7 +23,9 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
+#include "log.h"
 
+    int lib_create_server_socket(const char* pIp, int nPort);
 
 #ifdef	__cplusplus
 }

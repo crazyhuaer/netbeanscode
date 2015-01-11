@@ -22,32 +22,36 @@ extern "C" {
 
 #define PRINTF_MAX_LINE_LEN 4096
 
-#define LOGFILE "./smarthome.log"
+#define LOGFILE "smarthome.log"
 
 FILE *logfile;
 char LogCreated;
 
-    
-void LogPrintf(const char* msg, ...);
-void Print(int level,const char* msg, ...);
+void LogPrintfInfo(const char *msg, ...);
+
+void LogPrintfDebug(const char *msg, ...);
+
+void LogPrintfError(const char *msg, ...);
+
+void LogPrintf(const char* msg,...);
 extern void OpenLogFile(char *logpath);
 
 #if DEBUG_PRINT_ENABLED
-    #define INFO Print
+    #define INFO LogPrintfInfo
 #else
     #define INFO(format, args...) ((void)0)
 #endif
 
 
 #if DEBUG_LOG_ENABLED
-    #define DEBUG Print
+    #define DEBUG LogPrintfDebug
 #else
     #define DEBUG(format, args...) ((void)0)
 #endif
 
 
 #if ERROR_LOG_ENABLED
-    #define ERROR Print
+    #define ERROR LogPrintfError
 #else
     #define ERROR(format, args...) ((void)0)
 #endif    

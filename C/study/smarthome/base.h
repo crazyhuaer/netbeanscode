@@ -16,8 +16,15 @@ extern "C" {
     #include <stdlib.h>
     #include <string.h>
     
+    #define CONLINELENGTH 1024
+
+    char *newData(int size);
     char *newString(char *s);
+    char *newMultiString(const char* msg, ...);
     char * getCurrentTime();
+    
+    char *ReadConfigfile(char *fileName, char *item);
+    int GetConfInt(char * confPath,char *name);
 
 #ifdef	__cplusplus
 }

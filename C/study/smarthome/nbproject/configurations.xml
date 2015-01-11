@@ -9,6 +9,7 @@
       <itemPath>lib_system.h</itemPath>
       <itemPath>log.h</itemPath>
       <itemPath>main.h</itemPath>
+      <itemPath>ccl/strings.h</itemPath>
       <itemPath>uthash.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -23,6 +24,7 @@
       <itemPath>lib_system.c</itemPath>
       <itemPath>log.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>ccl/strings.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -36,6 +38,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>ccl</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -49,6 +54,10 @@
       <item path="base.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ccl/strings.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lib_network.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -92,6 +101,10 @@
       <item path="base.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ccl/strings.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lib_network.c" ex="false" tool="0" flavor2="0">
       </item>

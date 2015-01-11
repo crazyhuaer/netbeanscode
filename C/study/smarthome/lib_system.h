@@ -16,9 +16,13 @@ extern "C" {
 #include <stdlib.h>
 #include "base.h"
 #include "main.h" 
+#include "strings.h"
 
     int InitSystem();
+    void InitSystemPrint();
+    void InitConfigSystem();
     void InitSystemVar();
+    int InitLogSystem();
     
     void DestorySystem();
     void SetupSignal();

@@ -5,28 +5,84 @@
 
 // Init the system,such as log signal
 int InitSystem(){
+    InitSystemPrint();
     InitSystemVar();
+    InitConfigSystem();
     InitLogSystem();
     SetupSignal();
 }
 
-void InitSystemVar(){
+void InitSystemPrint(){
+    printf("----------Smart Home Network Programming--------\n");
+}
 
+void InitSystemVar(){
+    systemTime = newData(20);
+    systemTime = getCurrentTime();
+    //log_path = newMultiString("%s%s",systemTime,".log");
+    // log_path from config file
+    
+    char buf[1024];
+    int count;
+    count = readlink( "/proc/self/exe", buf,1024);
+    if ( count < 0 || count >=1024) 
+    {
+        printf( "获取配置文件基础路径发生错误\n" );
+    }
+    while(buf[ count ]!='/')
+        count--;
+    count++;
+    buf[ count ] = '\0';
+    
+    log_path = newMultiString("%s%s",buf,LOGFILE);
+    confPath = newMultiString("%s%s",buf,"config.conf");
+    
+    config=(struct config_t*)malloc(sizeof(struct config_t));
+    memset(config,0,sizeof(struct config_t));
+}
+
+void InitConfigSystem(){
+    printf("\tL__________System params:\n");
+    printf("\tL__________Web IP:192.168.2.130\n");
+    
+    config->server.serverport = GetConfInt(confPath,"serverport");
 }
 
 // open the log file
-int InitLogSystem(){ 
-    
+int InitLogSystem(){  
     if (DEBUG_LOG_ENABLED || ERROR_LOG_ENABLED) {
         OpenLogFile(log_path);
     }
+}
 
-    // test log system
-    INFO(2,"%s%s\n","This is an error of log file.","do you have a list for this?");
+void sig_handler(int signo) {
+    if (signo == SIGINT){
+        //INFO("%s","received SIGINT\n");
+        ERROR("%s","received SIGINT\n");
+        DestorySystem();
+    }else if (signo == SIGPIPE) {
+        struct sigaction sa;
+
+        sa.sa_handler = SIG_IGN;
+        sa.sa_flags = 0;
+
+        if (sigemptyset(&sa.sa_mask) == -1 ||
+                sigaction(SIGPIPE, &sa, 0) == -1) {
+            ERROR("%s","SIGPIPE Error\n");
+            DestorySystem();
+        }
+    }else if(signo == SIGTSTP){
+        printf("Ctrl+z,ignore\n");
+    }else if(signo == SIGTERM){
+        printf("SIGTERM,ignore\n");
+    }else{
+        ERROR("%s","what?signal?\n");
+    }
 }
 
 // process the system signals
 void SetupSignal() {
+    /*
     signal(SIGPIPE, SIG_IGN);
     struct sigaction sa;
 
@@ -37,12 +93,30 @@ void SetupSignal() {
             sigaction(SIGPIPE, &sa, 0) == -1) {
         exit(-1);
     }
+     * */
+    if (signal(SIGINT, sig_handler) == SIG_ERR)
+        printf("\ncan't catch SIGINT\n");
+    if (signal(SIGPIPE, sig_handler) == SIG_ERR)
+        printf("\ncan't catch SIGPIPE\n");
+    if (signal(SIGTERM, sig_handler) == SIG_ERR)
+        printf("\ncan't catch SIGTERM\n");
+    if (signal(SIGTSTP, sig_handler) == SIG_ERR)
+        printf("\ncan't catch SIGPIPE\n");
 }
 
 void DestorySystem(){
     if (log_path) {
-        free(log_path);
-        log_path = NULL;
+        freeData(log_path);
     }
+    
+    if (confPath) {
+        freeData(confPath);
+    }
+    
+    if (systemTime){
+        freeData(systemTime);
+    }
+    
     CloseLogFile();
+    exit(0);
 }

@@ -22,7 +22,20 @@ extern "C" {
     #define true 1
     #define false 0
     
+    char *systemTime;
     char *log_path;
+    char *confPath;
+    struct config_t *config;
+
+    struct config_t {
+        struct {
+            FILE *logfile;
+        } system;
+
+        struct {
+            int serverport;
+        } server;
+    };
     
 
 #ifdef	__cplusplus

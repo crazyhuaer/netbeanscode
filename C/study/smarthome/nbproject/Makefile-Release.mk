@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/base.o \
+	${OBJECTDIR}/ccl/strings.o \
 	${OBJECTDIR}/lib_network.o \
 	${OBJECTDIR}/lib_system.o \
 	${OBJECTDIR}/log.o \
@@ -70,6 +71,11 @@ ${OBJECTDIR}/base.o: base.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/base.o base.c
+
+${OBJECTDIR}/ccl/strings.o: ccl/strings.c 
+	${MKDIR} -p ${OBJECTDIR}/ccl
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ccl/strings.o ccl/strings.c
 
 ${OBJECTDIR}/lib_network.o: lib_network.c 
 	${MKDIR} -p ${OBJECTDIR}
