@@ -2,7 +2,6 @@
 
 #include "lib_system.h"
 
-
 // Init the system,such as log signal
 int InitSystem(){
     InitSystemPrint();
@@ -65,24 +64,23 @@ void sig_handler(int signo) {
         ERROR("%s","received SIGINT\n");
         DestorySystem();
     }else if (signo == SIGPIPE) {
-        struct sigaction sa;
-
-        sa.sa_handler = SIG_IGN;
-        sa.sa_flags = 0;
-
-        if (sigemptyset(&sa.sa_mask) == -1 ||
-                sigaction(SIGPIPE, &sa, 0) == -1) {
-            ERROR("%s","SIGPIPE Error\n");
-            DestorySystem();
-        }
+        INFO("%s","received SIGPIPE\n");
+        ERROR("%s", "received SIGPIPE\n");
+        signal(SIGPIPE,SIG_IGN);
     }else if(signo == SIGTSTP){
         printf("Ctrl+z,ignore\n");
+        signal(SIGTSTP,SIG_DFL);
     }else if(signo == SIGTERM){
         printf("SIGTERM,ignore\n");
+        signal(SIGTERM,SIG_IGN);
     }else{
         ERROR("%s","what?signal?\n");
     }
 }
+
+//void handle_pipe(int sig){
+//    INFO("%s","received SIGPIPE\n");
+//}
 
 // process the system signals
 void SetupSignal() {
@@ -94,6 +92,19 @@ void SetupSignal() {
         printf("\ncan't catch SIGTERM\n");
     if (signal(SIGTSTP, sig_handler) == SIG_ERR)
         printf("\ncan't catch SIGPIPE\n");
+
+//    struct sigaction sa;
+//    //在linux下写socket的程序的时候，如果尝试send到一个disconnected socket上，就会让底层抛出一个SIGPIPE信号。
+//    //这个信号的缺省处理方法是退出进程
+//    //重载这个信号的处理方法,如果接收到一个SIGPIPE信号，忽略该信号
+//    //sa.sa_handler = handle_pipe;
+//    sa.sa_handler = SIG_IGN;
+//    sa.sa_flags = 0;
+//    //sigemptyset()用来将参数set信号集初始化并清空
+//    if (sigemptyset(&sa.sa_mask) == -1 ||
+//            sigaction(SIGPIPE, &sa, 0) == -1) {
+//        exit(-1);
+//    }
 }
 
 void DestorySystem(){

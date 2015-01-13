@@ -12,13 +12,24 @@
 extern "C" {
 #endif
 
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include "log.h"
-    #include "lib_network.h"
-    #include "lib_system.h"
-    #include "uthash.h"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+    
+#include "log.h"
+#include "lib_network.h"
+#include "lib_system.h"
+#include "uthash.h"
+    
+#include "cii/stack.h"
+#include "cii/atom.h"
+#include "cii/mem.h"
+#include "cii/list.h"
+#include  "cii/table.h"
+#include "cii/array.h"
+#include "cii/ring.h"
+#include "cii/arrayrep.h"
+ 
     #define true 1
     #define false 0
     

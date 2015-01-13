@@ -3,7 +3,7 @@
 #include "main.h"
 
 // string
-char *newData(int size){
+char *newData(unsigned int size){
     char *d = malloc(size);
     if (d == NULL) return NULL;
     memset(d,0,size);

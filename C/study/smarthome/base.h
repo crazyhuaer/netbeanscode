@@ -18,7 +18,7 @@ extern "C" {
     
     #define CONLINELENGTH 1024
 
-    char *newData(int size);
+    char *newData(unsigned int size);
     char *newString(char *s);
     char *newMultiString(const char* msg, ...);
     char * getCurrentTime();

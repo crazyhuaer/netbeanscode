@@ -36,6 +36,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/base.o \
+	${OBJECTDIR}/cii/array.o \
+	${OBJECTDIR}/cii/atom.o \
+	${OBJECTDIR}/cii/except.o \
+	${OBJECTDIR}/cii/list.o \
+	${OBJECTDIR}/cii/mem.o \
+	${OBJECTDIR}/cii/ring.o \
+	${OBJECTDIR}/cii/stack.o \
+	${OBJECTDIR}/cii/table.o \
 	${OBJECTDIR}/lib_network.o \
 	${OBJECTDIR}/lib_system.o \
 	${OBJECTDIR}/log.o \
@@ -70,6 +78,46 @@ ${OBJECTDIR}/base.o: base.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/base.o base.c
+
+${OBJECTDIR}/cii/array.o: cii/array.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/array.o cii/array.c
+
+${OBJECTDIR}/cii/atom.o: cii/atom.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/atom.o cii/atom.c
+
+${OBJECTDIR}/cii/except.o: cii/except.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/except.o cii/except.c
+
+${OBJECTDIR}/cii/list.o: cii/list.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/list.o cii/list.c
+
+${OBJECTDIR}/cii/mem.o: cii/mem.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/mem.o cii/mem.c
+
+${OBJECTDIR}/cii/ring.o: cii/ring.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/ring.o cii/ring.c
+
+${OBJECTDIR}/cii/stack.o: cii/stack.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/stack.o cii/stack.c
+
+${OBJECTDIR}/cii/table.o: cii/table.c 
+	${MKDIR} -p ${OBJECTDIR}/cii
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/table.o cii/table.c
 
 ${OBJECTDIR}/lib_network.o: lib_network.c 
 	${MKDIR} -p ${OBJECTDIR}

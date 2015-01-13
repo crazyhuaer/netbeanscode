@@ -11,6 +11,9 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>ccl</sourceRootElem>
+                <sourceRootElem>include</sourceRootElem>
+                <sourceRootElem>src</sourceRootElem>
+                <sourceRootElem>cii</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

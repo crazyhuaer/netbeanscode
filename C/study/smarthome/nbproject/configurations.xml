@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="cii" displayName="cii" projectFiles="true">
+      <itemPath>cii/array.c</itemPath>
+      <itemPath>cii/array.h</itemPath>
+      <itemPath>cii/arrayrep.h</itemPath>
+      <itemPath>cii/atom.c</itemPath>
+      <itemPath>cii/atom.h</itemPath>
+      <itemPath>cii/except.c</itemPath>
+      <itemPath>cii/except.h</itemPath>
+      <itemPath>cii/list.c</itemPath>
+      <itemPath>cii/list.h</itemPath>
+      <itemPath>cii/mem.c</itemPath>
+      <itemPath>cii/mem.h</itemPath>
+      <itemPath>cii/ring.c</itemPath>
+      <itemPath>cii/ring.h</itemPath>
+      <itemPath>cii/stack.c</itemPath>
+      <itemPath>cii/stack.h</itemPath>
+      <itemPath>cii/table.c</itemPath>
+      <itemPath>cii/table.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -9,7 +28,6 @@
       <itemPath>lib_system.h</itemPath>
       <itemPath>log.h</itemPath>
       <itemPath>main.h</itemPath>
-      <itemPath>ccl/strings.h</itemPath>
       <itemPath>uthash.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -39,6 +57,9 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>ccl</Elem>
+    <Elem>include</Elem>
+    <Elem>src</Elem>
+    <Elem>cii</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -54,7 +75,39 @@
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
+      <item path="cii/array.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/arrayrep.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/atom.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/atom.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/except.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/except.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/list.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/list.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/mem.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/mem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/ring.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/ring.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/stack.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/stack.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/table.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/table.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lib_network.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -99,7 +152,39 @@
       </item>
       <item path="base.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="ccl/strings.h" ex="false" tool="3" flavor2="0">
+      <item path="cii/array.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/arrayrep.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/atom.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/atom.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/except.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/except.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/list.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/list.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/mem.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/mem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/ring.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/ring.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/stack.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/stack.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cii/table.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cii/table.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lib_network.c" ex="false" tool="0" flavor2="0">
       </item>
