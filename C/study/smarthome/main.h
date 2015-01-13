@@ -34,12 +34,14 @@ extern "C" {
     #define false 0
     
     char *systemTime;
+    
     char *log_path;
     char *confPath;
     struct config_t *config;
 
     struct config_t {
         struct {
+            char *basename;
             FILE *logfile;
         } system;
 

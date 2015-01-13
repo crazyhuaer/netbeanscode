@@ -1,5 +1,7 @@
 
 
+#include <unistd.h>
+
 #include "lib_system.h"
 
 // Init the system,such as log signal
@@ -34,12 +36,14 @@ void InitSystemVar(){
         count--;
     count++;
     buf[ count ] = '\0';
-    
+
     log_path = newMultiString("%s%s",buf,LOGFILE);
     confPath = newMultiString("%s%s",buf,"config.conf");
     
     config=(struct config_t*)malloc(sizeof(struct config_t));
     memset(config,0,sizeof(struct config_t));
+    
+    config->system.basename = newString(buf);
 }
 
 void InitConfigSystem(){ 
@@ -59,22 +63,52 @@ int InitLogSystem(){
 }
 
 void sig_handler(int signo) {
-    if (signo == SIGINT){
-        //INFO("%s","received SIGINT\n");
-        ERROR("%s","received SIGINT\n");
-        DestorySystem();
-    }else if (signo == SIGPIPE) {
-        INFO("%s","received SIGPIPE\n");
-        ERROR("%s", "received SIGPIPE\n");
-        signal(SIGPIPE,SIG_IGN);
-    }else if(signo == SIGTSTP){
-        printf("Ctrl+z,ignore\n");
-        signal(SIGTSTP,SIG_DFL);
-    }else if(signo == SIGTERM){
-        printf("SIGTERM,ignore\n");
-        signal(SIGTERM,SIG_IGN);
-    }else{
-        ERROR("%s","what?signal?\n");
+
+    switch (signo) {
+        case SIGINT:    // interrupt the programe
+        {
+            ERROR("%s", "received SIGINT\n");
+            DestorySystem();
+            break;
+        }
+        case SIGPIPE:   // the server is out of connect
+        {
+            INFO("%s", "received SIGPIPE\n");
+            ERROR("%s", "received SIGPIPE\n");
+            signal(SIGPIPE, SIG_IGN);
+            break;
+        }
+        case SIGTSTP:   // stop the programe
+        {
+            printf("Ctrl+z,ignore\n");
+            signal(SIGTSTP, SIG_DFL);
+            break;
+        }
+        case SIGTERM:   // kill the programe
+        {
+            printf("SIGTERM,ignore\n");
+            signal(SIGTERM, SIG_IGN);
+            break;
+        }
+        case SIGHUP:    // restart the programe.
+        {
+            printf("get SIGHUP\n");
+            sigset_t x;
+            sigemptyset(&x);
+            sigaddset(&x, SIGHUP);
+            sigprocmask(SIG_UNBLOCK, &x, NULL);
+
+            const char *exepath = newMultiString("%s%s", config->system.basename, "smarthome");
+            execl(exepath, NULL);
+  
+            exit(1);
+      
+            break;
+        }
+        default:
+        {
+
+        }
     }
 }
 
@@ -93,6 +127,19 @@ void SetupSignal() {
     if (signal(SIGTSTP, sig_handler) == SIG_ERR)
         printf("\ncan't catch SIGPIPE\n");
 
+    struct sigaction new_action;
+    struct sigaction oldaction;
+    new_action.sa_handler = sig_handler;
+
+    new_action.sa_flags = 0;
+    
+    sigaction(SIGHUP,NULL,&oldaction);
+    
+    if (oldaction.sa_handler != SIG_IGN) {
+        sigaction(SIGHUP,&new_action,NULL);
+    }
+
+    
 //    struct sigaction sa;
 //    //在linux下写socket的程序的时候，如果尝试send到一个disconnected socket上，就会让底层抛出一个SIGPIPE信号。
 //    //这个信号的缺省处理方法是退出进程
