@@ -99,7 +99,7 @@ void sig_handler(int signo) {
             sigprocmask(SIG_UNBLOCK, &x, NULL);
 
             const char *exepath = newMultiString("%s%s", config->system.basename, "smarthome");
-            execl(exepath, NULL);
+            //execl(exepath, NULL);
   
             exit(1);
       

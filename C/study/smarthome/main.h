@@ -25,7 +25,7 @@ extern "C" {
 #include "cii/atom.h"
 #include "cii/mem.h"
 #include "cii/list.h"
-#include  "cii/table.h"
+#include "cii/table.h"
 #include "cii/array.h"
 #include "cii/ring.h"
 #include "cii/arrayrep.h"
