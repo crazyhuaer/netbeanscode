@@ -1,0 +1,51 @@
+Required steps to create the required class skeletons
+
+
+Read this: http://beej.us/guide/bgnet/output/html/multipage/index.html
+
+
+$ ooc --new Socket
+$ ooc --new SocketException --parent Exception --template minimal --target socket
+
+
+
+Socket_constructor parameter = struct addrinfo * hint
+
+Socket virtuals
+	shutdown(
+
+TCPServer is a subclass for Socket
+
+tcpserver_new()
+tcpserver_set_backlog()
+tcpserver_bind_service(TCPServer, "service", TCPConnection)
+
+
+TCPClient is a subclass for Socket
+tcpclient_new_to_server("server", "service")
+TCPConnection = tcpcient_connect(TCPClient)
+
+TCPConnection virtuals
+	onOpen
+	onReceive
+	onReadyToSend
+	onTerminate
+	onClose
+
+TCPConnection members
+	handler
+	Socket	parent
+	void * context
+
+tcpconnection_send(
+tcpconenction_terminate(
+tcpconnection_close(
+
+tcpconnection_set_context(
+tcpconnection_get_context(
+tcpconnection_remove_context(
+
+
+
+
+

@@ -1,0 +1,432 @@
+<html lang="en">
+<head>
+<title>Interfaces - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Implementing-Classes.html#Implementing-Classes" title="Implementing Classes">
+<link rel="next" href="Memory-handling.html#Memory-handling" title="Memory handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Interfaces"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Memory-handling.html#Memory-handling">Memory handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Implementing-Classes.html#Implementing-Classes">Implementing Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">6 Interfaces and multiple inheritance</h2>
+
+<p>
+Since version 1.3 <strong>ooc</strong> introduces a kind of multiple inheritance with the help of interfaces. The idea behind is a bit a mix of the Java and C++ interfaces, but differs in the way of inheritance and the use.<br>
+
+
+<h3 class="section">6.1 What is an interface?</h3>
+
+<p>
+An interface is simply a collection of functions that describe the behavior of the Object in some aspect. The interface itself does not implement any functionality, it just defines what methods the Object must have, and behave according to it. In some design methods this is called a contract for the Object. The Object should implement its own implementation of the contract: this is called impementing the interface. In Java the interface is a pure abstract class without a data member, in C++ it is called a pure virtual class without constructor, destructor and data members.<br>
+The easiest way to define a group of functions is to collect some function pointers in a C struct. For example in pure C we would write:
+<pre class="example">     struct DrawableInterafce
+     {
+         void     (* draw)( Object );
+         void     (* rotate)( Object, double );
+         int      (* get_heigth)( Object );
+         int      (* get_width)( Object );
+     };
+</pre>
+   <p>
+This describes the behavior of a drawable <code>Object</code>. Any Object type that implements a <code>DrawableInterafce</code> can be asked for its dimensions and can be drawn and rotated.
+
+
+<h4 class="subsection">6.1.1 Interfaces and inheritance</h4>
+
+<p>
+The use of interfaces provides a kind of multiple inheritance for <strong>ooc</strong>. While the classes can be inherited in a single inheritance chain (each class can have only one superclass), every class can implement as many interfaces as nedded. Since interfaces can be implemented by unrelated classes, it is a kind of multiple inheritance, like in Java.<br>
+In <strong>ooc</strong> interfaces are simply added to the virtual table, so you can reference and use them as any other virtual function of the class! This is very similar to the C++ implementation of an interface.<br>
+As a consequence, in <strong>ooc</strong> the interface implementation is inherited by the subclasses and can be overriden (like in C++, and unlike Java).<br>
+The good news is that by the help of interfaces <strong>ooc</strong> introduces multiple inheritance. The bad news is, that multiple inheritance calls for the dread problem of diamond inheritance (<a href="http://en.wikipedia.org/wiki/Diamond_problem">http://en.wikipedia.org/wiki/Diamond_problem</a>).<br>
+Since an ANSI-C compiler has nothing to handle such a situation, we must avoid any possibility of a diamond inheritance, thus the interfaces themselves can not be inherited (other words: can not be extended) in <strong>ooc</strong>.<br>
+The following table summarizes the behaviour of interfaces in different languages:
+
+   <p><table summary="">
+<tr align="left"><th valign="top"></th><th valign="top">ooc </th><th valign="top">C++ </th><th valign="top">Java
+
+<br></th></tr><tr align="left"><td valign="top">The implementation of the interface is inherited by subclassing a class
+</td><td valign="top">yes
+</td><td valign="top">yes
+</td><td valign="top">no
+
+<br></td></tr><tr align="left"><td valign="top">Interface methods can be overriden in subclasses
+</td><td valign="top">yes
+</td><td valign="top">yes
+</td><td valign="top">must be
+
+<br></td></tr><tr align="left"><td valign="top">The interface itself can be inherited (a.k.a. extended in Java)
+</td><td valign="top">no
+</td><td valign="top">yes
+</td><td valign="top">yes
+
+   <br></td></tr></table>
+
+
+<h4 class="subsection">6.1.2 Creating an interface</h4>
+
+<p>
+Creating an interface is very easy in <strong>ooc</strong>: you just simply deaclare its members in a publicly available header file. For example we create an interface for a drawable Object:<br>
+In <code>drawable.h</code>:
+<pre class="example">     DeclareInterface( Drawable )
+     
+         void     (* draw        )( Object );
+         void     (* rotate      )( Object, double );
+         int      (* get_heigth  )( Object );
+         int      (* get_width   )( Object );
+     
+     EndOfInterface;
+</pre>
+   <p>Please note, that the first parameter for each method in the interface is <code>Object</code>! This is, because any kind of a <code>Class</code> can implement the interface, so we can not limit the type of the <code>Object</code> for just a given class.<br>
+Each interafce has a unique identifier, an interface descriptor that must be statically allocated (in ROM on microcomputers). This can be done in <code>drawable.c</code>, or if we have many interfaces, collected them together in e.g. <code>interfaces.c</code>:
+<pre class="example">     #include "drawable.h"
+     
+     AllocateInterface( Drawable );
+</pre>
+   <p>That's it! We have done: the interface is declared and has a unique id: <code>Drawable</code>.<br>
+To minimize your work you can use the ooc tool to create the skeleton:
+<pre class="example">     ~$ ooc --new Drawable --template interface
+</pre>
+   <p>
+
+<h4 class="subsection">6.1.3 Implementing an interface</h4>
+
+<p>To implement an interface for a class, you must do the followings:
+
+     <ol type=1 start=1>
+<li>Add the interface to the class's virtual table.
+
+<li>Implement the interface methods for the class
+
+<li>Initialize the virtual table with the interface method implementations
+
+<li>Register the implemented interface(s) for the class
+
+<li>Allocate the ClassTable using the interface register
+        </ol>
+
+So let's say we implement the Drawable interface for the <code>Cat</code> class! In the followings we
+show only the steps necessary to implement the interface, other issues covered earlier are not repeated here!<br>
+Implelementing multiple interfaces for the class is the same, just repeat the necessary macros and lines!
+As an example, along with the <code>Drawable</code> interface we add the <code>Pet</code> interafce as well.
+
+
+<h5 class="subsubsection">6.1.3.1 Adding the interface to the virtual table</h5>
+
+<p>In the public header (<kbd>cat.h</kbd>) locate the <code>Virtuals</code>, and add the interface with the <code>Interface</code> macro:
+<pre class="example">     Virtuals( Cat, Animal )
+     
+         void     ( * miau )( Cat );
+     
+         Interface( Drawable );
+         Interface( Pet );
+     
+     EndOfVirtuals;
+</pre>
+   <p>
+
+<h5 class="subsubsection">6.1.3.2 Implementing the interafce methods</h5>
+
+<p>
+The interface method impementations are <code>static</code> functions in the class implementation file.
+This is exactly the same aproach to the implementation of any virtual method. (Do not forget: an interface is just a
+collection of virtual functions in ooc.)<br>
+So in <kbd>cat.c</kbd> write:
+<pre class="example">     static
+     void
+     cat_rotate( Cat self, double arcus )
+     {
+         assert( ooc_isInstanceOf( self, Cat ) );
+     
+         // Rotate your cat here :-)
+     }
+</pre>
+   <p>
+
+<h5 class="subsubsection">6.1.3.3 Initializing the virtual table</h5>
+
+<p>
+In the class initialization code you must assign the the implementation methods with the appropriate function pointers
+in the virtual table. Again, see the section about virtual functions.
+
+<pre class="example">     static
+     void
+     Cat_initialize( Class this )
+     {
+         CatVtable virtuals = (CatVtable) this-&gt;vtable;
+     
+         virtuals-&gt;Drawable.rotate = (void (*)(Object, double)) cat_rotate;
+         // add the other methods as well ...
+     }
+</pre>
+   <p>
+
+<h5 class="subsubsection">6.1.3.4 Registering the implemented interafces</h5>
+
+<p>
+There is a way to retrieve the implemented interfaces for any class, that is the <code>ooc_get_interface()</code> function. To let it work, we must 
+register all implemented interfaces for the class. This is done in the class implementation file, preferably just right before the class allocation.
+So, in <kbd>cat.c</kbd> we register the Drawable and Pet interfaces for the Cat class:
+<pre class="example">     InterfaceRegister( Cat )
+     {
+         AddInterface( Cat, Drawable ),
+         AddInterface( Cat, Pet )
+     };
+</pre>
+   <p>Listen to the different syntax! Internally this is a table of structs, so you must end it with a semicolon, and use comma as the internal list separator.
+You must not put a comma after the last item in the list!<br>
+<code>ooc_get_interface()</code> scans this table, so you can get some increase in speed of average execution, if you place your most frequently used interfaces
+in the first positions.
+
+
+<h5 class="subsubsection">6.1.3.5 Allocating the class with interfaces</h5>
+
+<p>
+The only thing remained is to let the ClassTable know about the interface register. So instead of <code>AllocateClass</code> use <code>AllocateClassWithInterface</code>:
+
+<pre class="example">     AllocateClassWithInterface( Cat, Animal );
+</pre>
+   <p>
+If you forget this step, <code>ooc_get_interface()</code> will always return <code>NULL</code>, since it will not know about the registered interfaces for the class.<br>
+<br>
+With this step we have finished the implementation of an interface for a class.
+
+<a name="Using-an-interface"></a>
+
+<h4 class="subsection">6.1.4 Using an interface</h4>
+
+<p>
+When we need to invoke an interface method, simply call the virtual function via the function pointer in the virtual table.
+There can be two situation in practice: we may know the type of the object we have, or may not.
+
+
+<h5 class="subsubsection">6.1.4.1 If the type of the Object is known</h5>
+
+<p>
+If we know the type of the object we have, and this type has implemented the interface that we need, then we can simply call the virtual function of the interface.
+<pre class="example">     Cat mycat = cat_new();
+     
+     // rotating mycat:
+     CatVirtual(mycat)-&gt;Drawable.rotate( (Object) mycat );
+</pre>
+   <p>
+This is the fastest way to invoke an interface method, since this is a dereferencing of a function pointer only.
+
+
+<h5 class="subsubsection">6.1.4.2 If the type of the Object is unknown</h5>
+
+<p>
+The main use of an interface is when we do not know the exact type of the object we have, but we want it to behave according its interface method. The <code>ooc_get_interface()</code> method can retrieve a given interface from any kind of <code>Object</code>. The <code>ooc_get_interface()</code> function returns a pointer to the interface 
+methods of the class, and the desired method can be called via this function pointer.
+<pre class="example">     void
+     rotate_an_animal( Animal self )
+     {
+         Drawable drawable = ooc_get_interface( (Object) self );
+     
+         if( drawable )
+             drawable-&gt;rotate( (Object) self );
+     }
+</pre>
+   <p>
+<code>ooc_get_interface()</code> returns <code>NULL</code> if the desired interface is not implemented for the object. If you use this function, always check for a <code>NULL</code> pointer, otherwise you will generate a segmentation fault, if the interface is not implemented.<br>
+In case you know that your object has implemented the desired interface, but you do not know the exact type of your object, you can use the <code>ooc_get_interface_must_have()</code> function instead. This will never return a <code>NULL</code> pointer, but throws an <code>Exception</code> if the object does not have the desired interface.
+<pre class="example">     ooc_get_interface_must_have( (Object) self )-&gt;rotate( (Object) self );
+</pre>
+   <p>
+<strong>Note</strong>: the <code>ooc_get_interface()</code> function traveses the InterfaceRegister for the class and its superclasses, so it may be relative slow. If you use the interface for an object multiple times within a context, it is worth to retrieve the interface pointer only ones for the object, and keep it around until needed.
+
+
+<h3 class="section">6.2 Mixins</h3>
+
+<p>
+The mixins are interfaces that have default implementations and have their own data (<a href="http://en.wikipedia.org/wiki/Mixin">http://en.wikipedia.org/wiki/Mixin</a>).
+
+A mixin does not know anything about the enclosing Object / Class!<br>
+
+From the user point of view a mixin looks identical to an interface! See <a href="Using-an-interface.html#Using-an-interface">Using an interface</a>.
+
+A mixin has its own data, but it can not be instantiated directly. It is always held by an Object (a carrier object).
+
+A mixin has the following features:
+     <ul>
+<li>May have default implementation of the interface methods (usually has, but this is not mandatory)
+<li>Has its own data (that is accessible by the enclosing class as well).
+<li>The default implementation of the interface methods can be overriden by the enclosing class.
+<li>May have initializing and finalizing, thus can use global resources.
+</ul>
+   
+
+<h4 class="subsection">6.2.1 Creating a mixin</h4>
+
+<p>
+The mixin is nothing else than an interface impementation plus a data structure. But this data structure is handled like a class, with very similar methods: there are initialization, finalization, construction, destruction and copy methods like for a normal Class, and an additional one: the ..._populate() method.<br>
+In this section we go through the steps creating a mixin.<br>
+To create the mixin skeleton for <code>Flavour</code>, just type:
+<pre class="example">     ~$ ooc --new Flavour --template mixin
+</pre>
+   <p>Three files has been created:<br>
+The <kbd>flavour.h</kbd> is familiar, it looks like a normal interface declaration except it is declared with <code>DeclareMixinInterface()</code>.<br>
+Put your interafce methods (function pointers, of course) into the declaration as needed.
+   <pre class="sp">
+
+</pre>
+There is a <kbd>implement/flavour.h</kbd> file, that contains the data member declaration for the mixin. Add your data members as needed.<br>
+These data fields will be mixed into the enclosing class's object structure, and can be referenced via a <code>FlavourData</code> type pointer (interface name + <code>Data</code> suffix).
+   <pre class="sp">
+
+</pre>
+In the <kbd>flavour.c</kbd> file you will find the necessary <code>AllocateMixin</code> macro, and you must provide the method implementations for the mixin. The following methods must be implemented:
+
+     <dl>
+<dt><code>Flavour_initialize()</code><dd>This is called only once, and is called automatically before the initialization of the first enclosing class.<br>
+Shared or global resources used by the mixin may be initialized here.
+
+<br><dt><code>Flavour_finalize()</code><dd>Called only once when <code>ooc_finalize_all()</code> is called.<br>
+Release the shared or global resources that were initialized by the mixin.
+
+<br><dt><code>Flavour_constructor( Flavour flavour, FlavourData self )</code><dd>Initializes the data fields of the mixin. All data fields are garanteed to be zero at entrance.<br>
+This method is called automatically before the enclosing class's constructor is called.<br>
+If your data fields do not require any construction, you can leave this method empty.<br>
+The interface methods are set (and are overriden by the enclosing class), so they can be used here. (The first parameter.)<br>
+Note, that there are no constructor parameters! There is only "default constructor" for mixins. If you need some values or construction depending on the enclosing object then implement a setter or constructor method in the interface itself and call it from the enclosing class's constructor!
+
+<br><dt><code>Flavour_destructor( Flavour flavour, FlavourData self )</code><dd>Destroys the data fields of the mixin.<br>
+This method is called automatically after the enclosing class's destructor, and the normal rules within a desctructor must be applied here as well!<br>
+If your data fields do not require any destruction, you can leave this method empty.
+The interface methods are set (and are overriden by the enclosing class), so they can be used here. (The first parameter.)<br>
+
+<br><dt><code>Flavour_copy( Flavour flavour, FlavourData self, const FlavourData from )</code><dd>Copy constructor. This is very similar to the copy constructor used for <code>Object</code>s! Must return: <code>OOC_COPY_DEFAULT</code>, <code>OOC_COPY_DONE</code> or <code>OOC_NO_COPY</code>, and the same rules apply!<br>
+This method is called automatically before calling the enclosing class's copy constructor.<br>
+The interface methods are set (and are overriden by the enclosing class), so they can be used here. (The first parameter.)<br>
+
+<br><dt><code>Flavour_populate( Flavour flavour )</code><dd>Populates the interface method table with function pointers to the default mixin method implementations.<br>
+This method is called automatically before calling the enclosing class's initialization method.<br>
+</dl>
+   
+   <pre class="sp">
+
+</pre>
+The mixin interface methods' implementation must follow an important rule! Since the mixin does not know where its data is located, the mixin's data must be retrieved first!<br>
+The only thing that a mixin method knows is the carrier <code>Object</code> (always the first parameter for an interface method!). Retrieving the mixin's data fields can be done with the <code>ooc_get_mixin_data()</code> function.<br>
+Therefore a typical mixin interface method starts with the followings:
+<pre class="example">     static
+     void
+     flavour_set( Object carrier, const char * flavour_name )
+     {
+         FlavourData self = ooc_get_mixin_data( carrier, Flavour );
+      
+         self-&gt;name = flavour_name;
+     }
+</pre>
+   <p>
+
+<h4 class="subsection">6.2.2 Implementing a mixin by a carrier class</h4>
+
+<p>
+The implementation of a mixin for a class is almost the same as the implementation of an interface, with few additional tasks.<br>
+The steps to implement some <code>Flavour</code> for the <code>IceCream</code> class are:
+     <ul>
+<li>Create the <code>IceCream</code> class with <kbd>~$ ooc --new IceCream</kbd>.
+
+<li>Add the <code>Interface( Flavour );</code> macro to the <code>IceCream</code> virtuals in <kbd>icecream.h</kbd>.
+
+<li>Add the <code>MixinData( Flavour );</code> data member to the end of the <code>ClassMembers( IceCream, Base )</code> structure in <kbd>implement/icecream.h</kbd>.<br>
+It is very important that no data members can follow the <code>MixinData()</code> macros in the <code>ClassMembers()</code> list, otherwise the copy constructor will not work correctly!
+
+<li>Create the Interface register for <code>IceCream</code> in <kbd>icecream.c</kbd>.
+     <pre class="example">          InterfaceRegister( IceCream )
+          {
+              AddMixin( IceCream, Flavour )
+          };
+</pre>
+     <p>
+<li>Replace the <code>AllocateClass( IceCream, Base );</code> macro with <code>AllocateClassWithInterface( IceCream, Base );</code>  in <kbd>icecream.c</kbd>.
+
+<li>Override the necessary <code>Flavour</code> interface methods as needed in <code>IceCream_initialize()</code>.
+
+<li>Set some initial vale for the <code>Flavour</code> mixin while constructig an <code>IceCream</code> object, if the default constructor is not sufficient for you.
+     <pre class="example">          static void IceCream_constructor( IceCream self, const void * params )
+          {
+              assert( ooc_isInitialized( IceCream ) );
+              chain_constructor( IceCream, self, NULL );
+          
+              IceCreamVirtuals( self )-&gt;Flavour.set( (Object) self, "vanilla" );
+              ...
+          }
+</pre>
+     <p>
+</ul>
+   
+
+<h4 class="subsection">6.2.3 How mixins work?</h4>
+
+<p>
+Mixins work like a superclass for the enclosing class: you do not have to care with it, <strong>ooc</strong> does everything automatically for you:
+     <ul>
+<li>The mixins are automatically initialized before initializing the enclosing class, just like a superclass.
+<li>The mixin's interface methods in the enclosing class's virtual table are automatically populated with the default implementations before the initialization method of the enclosing class is called.<br>
+(The mixin's <code>..._populate()</code> method is called.)
+<li>The mixin's data members are automatically constructed before the constructor of the carrier object is called.<br>
+Using the mixin in the carrier object's constructor is legal.
+<li>The mixin's data members are automatically copied before the copy constructor of the carrier object is called.<br>
+Using the mixin in the carrier object's copy constructor is legal.
+<li>The mixin's data members are automatically destructed after the destructor of the carrier object is called.<br>
+Using the mixin in the carrier object's destructor is legal.
+<li>The mixins are automatically finalized when <code>ooc_finalize_all()</code> is called.
+</ul>
+   
+This is the same behavior of a superclass, you can treat the implemented mixin as a superclass of the enclosing class as well, except you can not cast the types (Mixins do not have type information at all.), and you must access it as an interface via its interface methods.
+
+   <pre class="sp">
+
+</pre>
+However, mixins have some drawbacks!<br>
+First: it exposes all mixin data members to the enclosing (carrier)
+class: the enclosing class can acces the mixin's data directly, and it is up to the programmer's intelligence
+not to do bad thigs. :-(<br>
+Second: using interafces and mixins frequently is a very elegant design, but be aware that in <strong>ooc</strong> it is a bit expensive! Since a C compiler gives no support for such implementations, every lookup, check and conversion is done in run-time, thus much slower than in C++ for example.
+
+
+
+   </body></html>
+

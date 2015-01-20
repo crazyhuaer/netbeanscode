@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Memory handling - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Interfaces.html#Interfaces" title="Interfaces">
+<link rel="next" href="Unit-testing-support.html#Unit-testing-support" title="Unit testing support">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Memory-handling"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Unit-testing-support.html#Unit-testing-support">Unit testing support</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Interfaces.html#Interfaces">Interfaces</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">7 Memory handling</h2>
+
+<p>
+There are basic memory handling wrappers around the standard C library memory handling routines. The key difference is, that the <strong>ooc</strong> memory handling throws exceptions in case of a system failure, and performs some tasks that are necessary for multi-threaded or reentrant programming.
+
+
+<h3 class="section">7.1 Memory allocation</h3>
+
+<p>
+You can allocate memory with the following routines:
+
+<code>void * ooc_malloc( size_t size );</code> <br>
+
+The same to the standard <code>malloc</code>, except that throws an exception on failure, thus never returns <code>NULL</code>.
+   <pre class="sp">
+
+</pre>
+
+<code>void * ooc_calloc( size_t num, size_t size );</code> <br>
+
+The same to the standard <code>calloc</code>, except that throws an exception on failure, thus never returns <code>NULL</code>.
+   <pre class="sp">
+
+</pre>
+
+<code>void * ooc_realloc( void *ptr, size_t size );</code> <br>
+
+The same to the standard <code>realloc</code>, except that throws an exception on failure, thus never returns <code>NULL</code>.
+   <pre class="sp">
+
+</pre>
+
+<code>void * ooc_memdup( const void * ptr, size_t size );</code> <br>
+
+Duplicates a memory block using the standard <code>memcpy</code>, and throws an exception on failure, thus never returns <code>NULL</code>.
+
+
+<h3 class="section">7.2 Freeing the allocated memory</h3>
+
+<p>
+Deallocate the memory with one of the following methods:
+
+<code>void ooc_free( void * mem );</code> <br>
+
+Frees a memory block allocated with one of the above allocation codes. Never failes, <code>mem</code> can be <code>NULL</code>;
+   <pre class="sp">
+
+</pre>
+
+<code>void ooc_free_and_null( void ** mem_ptr );</code> <br>
+
+Frees a memory block via a memory pointer and nulls the pointer simultaneously. It is very important for thread-safe or reentrant codes. It is also very important for freeing memory blocks with circular references. <code>mem_ptr</code> can point to a NULL pointer.
+   <pre class="sp">
+
+</pre>
+Always use this, if your class has a memory pointer as a class member, for example in a class destructor!
+
+
+<h3 class="section">7.3 Thread safety</h3>
+
+<p><em>Important!</em> <strong>ooc</strong> is thread safe <em>only</em> if the underlying standard C library (malloc, calloc, realloc, setjmp/longjmp) is thread-safe too!
+   <pre class="sp">
+
+</pre>
+The thread safety of <strong>ooc</strong> does not mean that your code will be thread safe automatically! You must take care about the proper thread-safe implementation of your classes!
+   <pre class="sp">
+
+</pre>
+The <code>ooc_init_class()</code>, <code>ooc_finalize_class()</code> and <code>ooc_finalize_all()</code> functions are <em>not</em> thread safe! It is advisable calling <code>ooc_init_class()</code> from the main thread before the fork and <code>ooc_finalize_all()</code> after the join.
+
+
+   </body></html>
+

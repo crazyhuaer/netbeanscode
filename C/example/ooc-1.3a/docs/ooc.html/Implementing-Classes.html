@@ -1,0 +1,512 @@
+<html lang="en">
+<head>
+<title>Implementing Classes - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Using-Classes.html#Using-Classes" title="Using Classes">
+<link rel="next" href="Interfaces.html#Interfaces" title="Interfaces">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Implementing-Classes"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Interfaces.html#Interfaces">Interfaces</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Classes.html#Using-Classes">Using Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">5 Implementing Classes</h2>
+
+<p>
+Implementing a new class is relatively simple. You have to create three (or two if you prefer) source files, preferably with the class name. Then you can use the class implementation macros defined in <code>ooc.h</code>, and must define the predefined mandatory class methods. 
+
+
+<h3 class="section">5.1 Naming conventions</h3>
+
+<p>Although it is totally up to you, and has no effect on the operation of the <strong>ooc</strong> toolkit, I recommend using the following naming conventions:
+     <ul>
+<li>The class name should be relatively short, let's say maximum eight-twelve characters.
+<li>For file names use only lower case letters, like <code>foo.h</code>
+<li>Use capital first letter for class names and as the object type, like <code>Foo</code>.
+<li>Use a lower case initial for every class member function, making evident that this member function belongs to this class, like <code>foo_new</code>.
+<li>You should not apply any initials for the class member names and virtual function names. They will be accessed unambigously.
+</ul>
+   
+
+<h3 class="section">5.2 Source files</h3>
+
+<p>
+The following files must be created for implementing class Foo that is a subclass (child) of Parent:
+
+     <ul>
+<li>Class user header file. This contains the declarations of class Foo that are used by the users of the class.
+<li>Class Implementation header file. This file contains all declarations that are protected for class Foo.
+<li>Class implementation file. This file contains the declarations private to class foo and the class methods.
+</ul>
+
+<h3 class="section">5.3 Class user header file</h3>
+
+<p>This file should be named as <code>foo.h</code>.
+   <pre class="sp">
+
+</pre>
+In <code>foo.h</code> you must decalare the class and its virtual functions, plus the public methods of the class. <br>
+You always have to use the virtual function definition block, even you class do not have any virtual function. In this case just leave this block empty.
+
+<pre class="example">     
+     #ifndef FOO_H
+     #define FOO_H 1
+     
+     #include "parent.h"
+     
+     DeclareClass( Foo, Parent );
+     
+     Virtuals( Foo, Parent )
+                  
+     EndOfVirtuals;
+     
+     /* Foo methods */
+     
+     Foo foo_new( int initial_value );
+     
+     int foo_get_value( void );
+     
+     #endif
+     
+</pre>
+   <p>Please note that there is no semicolon after the <code>Virtuals</code>.
+
+
+<h3 class="section">5.4 Class implementation header file</h3>
+
+<p>The class implementation header file contains the definitions for data members of the class <code>Foo</code>.
+It is your choice if you creat a separate class implementation header, or you include this section in the <code>foo.h</code> as weel.
+   <pre class="sp">
+
+</pre>
+Including the implementation related definitions in the class user header file you make all class members public; in other word the user of class <code>foo</code> can access all data members simple via pointers.
+   <pre class="sp">
+
+</pre>
+Including the implementation related definition in a separeted class implementation header (e.g. called <code>impl_foo.h</code>) you make all data members protected; in other words the user of the class can not access it, but the subclasses always can.
+   <pre class="sp">
+
+</pre>
+Making really private members would be a bit complicated, and not supported by the macros. (See "pimpl" or "fast pimpl" idioms for a possible solution!)
+   <pre class="sp">
+
+</pre>
+The content of <code>impl_foo.h</code> should look like:
+
+<pre class="example">     
+     #ifndef IMPLEMENT_FOO_H
+     #define IMPLEMENT_FOO_H 1
+     
+     #include "impl_parent.h"
+     #include "foo.h"
+     
+     ClassMembers( Foo, Parent )
+     
+         int    data;
+         void * data_ptr;
+     
+     EndOfClassMembers;
+     
+     #endif
+     
+</pre>
+   <p>
+
+<h3 class="section">5.5 Class implementation file</h3>
+
+<p>
+In the class implementation file you must allocate the class description table and the virtual table of the class. Then you must implement the mandatory class member functions as below. After this mandatory section you can implement your class methods.
+   <pre class="sp">
+
+</pre>
+The class implementation file may be called e.g. <code>foo.c</code>, but it can consist multiple files if necessary, of course.
+
+
+<h4 class="subsection">5.5.1 Class allocation</h4>
+
+<p>
+<pre class="example">     
+     #include "impl_foo.h"
+     
+     AllocateClass( Foo, Parent );
+     
+</pre>
+   <p>
+
+<h4 class="subsection">5.5.2 Class initialization</h4>
+
+<p>
+The most of the class properties are initialized in compilation time. However the vtable can not be initialized perfectly, so initializing a class means building up the class's virtual table.
+   <pre class="sp">
+
+</pre>
+You must initialize the virtual table only if your class defines <em>new</em> virtual functions; or you would like to override any virtual function of the parent class! If you don't have to do anything in the class initialization, just leave its body empty!
+   <pre class="sp">
+
+</pre>
+The mandatory function name for the class initialization function is the class name + the suffix of "_initialize".
+   <pre class="sp">
+
+</pre>
+This function has got a pointer to the class description table as parameter. You can access the class's virtual table via this pointer. The virtual table address is stored in the <code>vtable</code> field of the class description table, and the type of the virtual table is the class name concatenated with <code>Vtable</code>.
+   <pre class="sp">
+
+</pre>
+Example: overriding the parent's <code>print</code> virtual function:
+
+<pre class="example">     
+     static
+     void
+     Foo_initialize( Class this )
+     {
+         FooVtable virtuals = (FooVtable) this-&gt;vtable;
+     
+         virtuals-&gt;Parent.print = virtual_foo_print;
+     }
+     
+</pre>
+   <p>
+   <pre class="sp">
+
+</pre>
+Example: aquiring some global resources in the class initialization code:
+
+<pre class="example">     
+     static List foo_list = NULL;
+     
+     static
+     void
+     Foo_initialize( Class this )
+     {
+         ooc_init_class( List ); /* make sure, that List has been initialized */
+     
+         foo_list = list_new( ooc_delete );
+     }
+     
+</pre>
+   <p>
+You can call <code>ooc_init_class( ClassName )</code> as many times, you need, the <code>ClassName_initialize( Class )</code> function will be called only once. (Until <code>ooc_finalize_class( ClassName )</code> is not called.)
+
+You can throw exception in <code>ClassName_initialize( Class )</code> function.
+
+
+<h4 class="subsection">5.5.3 Class finalization</h4>
+
+<p>
+If you have aquired some global resources during class initialization, you may want to release them before exiting your program. The class finalization method is there for this purpose.
+The class finalization must not throw an exception!
+
+<pre class="example">     
+     static
+     void
+     Foo_finalize( Class this )
+     {
+         ooc_delete_and_null( &amp; foo_list );
+     }
+     
+</pre>
+   <p>
+It is guaranteed, that <code>ClassName_finalize( Class )</code> is called only once for each <code>ClassName_initialize( Class )</code>.
+In most cases the class finalization is just a simple empty function, doing nothing.
+
+
+<h4 class="subsection">5.5.4 Constructor definition</h4>
+
+<p>
+The constructor is responsible for building up an object of the class. The constructor has a fix name: the class name concatenated with <code>_constructor</code>.
+   <pre class="sp">
+
+</pre>
+In the constructor you can be sure, that all data members are set to 0 (or NULL in case of a pointer) prior calling the constructor.
+   <pre class="sp">
+
+</pre>
+If your class has a parent class (other than <code>Base</code>) then the <em>first thing in a constructor is calling the parent class's constructor</em> using the <code>chain_constructor()</code> macro! It is advisable putting the <code>chain_constructor()</code> macro always at the begining of your constructor, because this practice makes the task of changing the inheritance more easy. The <code>chain_constructor()</code> macro has three parameters:
+
+     <ul>
+<li>Name of your <em>actual</em> class,
+<li>The actual object pointer,
+<li>Parameters for the parent constructor.
+</ul>
+   
+The class constructor has two parameters: the address of the object itself as an <code>Foo</code> object, and a pointer to the parameters. This parameter pointer was the second parameter of the <code>ooc_new()</code> function, or was assigned by the subclass constructor by the <code>chain_constructor()</code> macro.
+
+<pre class="example">     
+     static
+     void
+     Foo_constructor( Foo self, const void * params )
+     {
+         assert( ooc_isInitialized( Foo ) );   /* It is advisable to check if the class has
+                                                  been initialized before the first use */
+         chain_constructor( Foo, self, NULL ); /* Call parent's constructor first! */
+     
+         self-&gt;data = * ( (int*) params );
+     }
+     
+</pre>
+   <p>
+If you encounter any problem in the construction code, you can throw an exception here.
+   <pre class="sp">
+
+</pre>
+It is advisable defining a convenient wrapper around the <code>ooc_new()</code> call to make the parameter type checking perfect and being able to aggregate multiple parameters into a single parameter struct, that can be forwarded to the <code>ooc_new()</code> as the second parameter, and not less importantly converting the returned <code>Object</code> type automatically to your specific object type.
+
+<pre class="example">     
+     Foo
+     Foo_new( int initial_value )
+     {
+         return (Foo) ooc_new( Foo, &amp; initial_value );
+     }
+     
+</pre>
+   <p>
+
+<h4 class="subsection">5.5.5 Copy constructor definition</h4>
+
+<p>
+The copy constructor creates a second object of your class. The <code>ooc_duplicate</code> uses this constructor when creating a duplicate of the class.
+   <pre class="sp">
+
+</pre>
+The copy constructor has a fix name: the class name concatenated with <code>_copy</code>. <br>
+The copy constructor has two parameters: a pointer to the new object, and a pointer to the object that is copied.<br>
+The copy constructor must return:
+     <ul>
+<li><code>OOC_COPY_DONE</code>, if you have copied the object succesfully,
+<li><code>OOC_COPY_DEFAULT</code>, if you have not copied anything, and the default copy must be applied,
+<li><code>OOC_NO_COPY</code>, if this object can not be copied.
+</ul>
+   When entering into the copy constructor you can be sure that all the parent class' members are already copied succesfully, and all class members are set to 0 or NULL.
+   <pre class="sp">
+
+</pre>
+If you encounter any problem in the construction code, you can throw an exception here.
+
+
+<h5 class="subsubsection">5.5.5.1 Using the default copy constructor</h5>
+
+<p>
+If your class do not require any special action when it is copied (the bit-by-bit copy is OK) then you can leave all the task to the class manager, by simply returning <code>OOC_COPY_DEFAULT</code>:
+
+<pre class="example">     
+     static
+     int
+     Foo_copy( Foo self, const Foo from )
+     {
+         /* makes the default object copying (bit-by-bit) */
+         return OOC_COPY_DEFAULT;
+     }
+     
+</pre>
+   <p>
+But be careful with the default copying! Copying pointers may lead unexpected double frees of memory block and may crash! Make your own copy, if you have pointers, reference counted pointers, etc.!
+   <pre class="sp">
+
+</pre>
+An other aspect is the performance. Because the default copy uses the <code>memcpy()</code> for completing the copy of an object, it is a bit "expensive", it has too much overhead. If your program is using <code>ooc_duplicate()</code> extensively, it is recommended creating your own copy constructor for smaller objects.
+
+
+<h5 class="subsubsection">5.5.5.2 Creating your own copy constructor</h5>
+
+<p>
+Creating your own copy constructor is simply, and mostly self-explanatory. 
+
+<pre class="example">     
+     static
+     int
+     Foo_copy( Foo self, const Foo from )
+     {
+         self-&gt;data  =  from-&gt;data;
+     
+         return OOC_COPY_DONE;
+     }
+     
+</pre>
+   <p>
+Do not forget to <em>return OOC_COPY_DONE</em>, otherwise the default copy will run and will overwrite everything that you made!
+
+
+<h5 class="subsubsection">5.5.5.3 Disabling the copy constructor</h5>
+
+<p>
+Unfortunately it is not possible disabling the copy constructor in compilation time, like in C++. (In C++ this is the technique making the mandatory copy constructor <code>private: Foo::Foo( Foo&amp; )</code>, so noone will be able to access it.)<br>
+However you can prevent copying the object in runtime, simply returning <code>OOC_NO_COPY</code>, that forces throwing an <code>Exception</code> with the <code>err_can_not_be_duplicated</code> error code.
+
+<pre class="example">     
+     static
+     int
+     Foo_copy( Foo self, const Foo from )
+     {
+         return OOC_NO_COPY;
+     }
+     
+</pre>
+   <p>
+
+<h4 class="subsection">5.5.6 Destructor definition</h4>
+
+<p>
+The destructor destroys the object of your class before releasing the allocated memory. The <code>ooc_delete</code> uses this destructor when deleting an object.
+   <pre class="sp">
+
+</pre>
+The destructor has a fix name: the class name concatenated with <code>_destructor</code>. <br>
+The destructor has two parameters: a pointer to the object to be detroyed, and a pointer to its virtual table.
+   <pre class="sp">
+
+</pre>
+Within the destructor you can <em>not</em> throw any exception!<br>
+In the destructor you must consider, that your object is not valid: the virtual table pointer was nulled before entering in to the destructor. This is for marking the object that deletion is pending, and preventing multiple entry into the desctructor. (This way we could save some bytes in each objects.) This means that you can not use <code>Virtual</code> macro, or other macros that use the virtual table, e.g. <code>ooc_isInstanceOf()</code>.<br>
+However you can still access the virtual functions via the <code>vtab</code> parameter, so you can use them if you need.
+Since ooc 1.0 it is guaranteed that the destructor runs only once. However you should use only <code>ooc_delete_and_null()</code> <code>and ooc_free_and_null()</code> in destructors! This prevents crashes because of double freeing or deleting in case of circular references.
+
+<pre class="example">     
+     static
+     void
+     Foo_destructor( Foo self, FooVtable vtab )
+     {
+         ooc_free_and_null( &amp; self-&gt;data_ptr );
+     }
+     
+</pre>
+   <p>
+
+<h4 class="subsection">5.5.7 Implementing class methods</h4>
+
+<p>
+The class methods are normal C functions with the first parameter as a pointer to the object.
+   <pre class="sp">
+
+</pre>
+Because there is no real parameter type checking in C when calling this class method, it is possible to pass <em>anything</em> to the class method as its first parameter! This is error prone, so it is a good practice to always check the first parameter within the class method!
+
+
+<h5 class="subsubsection">5.5.7.1 Non-virtual methods</h5>
+
+<p>
+Non-virtual methods are global C functions.
+
+<pre class="example">     
+     void
+     foo_add_data( Foo self, int size )
+     {
+         assert( ooc_isInstanceOf( self, Foo ) );
+     
+         self-&gt;data_ptr = ooc_malloc( size );
+     }
+     
+</pre>
+   <p>
+
+
+<h5 class="subsubsection">5.5.7.2 Virtual methods</h5>
+
+<p>
+Virtual methods are static C functions, that are accessed via pointers in the virtual table.
+   <pre class="sp">
+
+</pre>
+See section "Virtual Functions" for more information!
+
+
+<h3 class="section">5.6 Classes that have other classes</h3>
+
+<p>
+You can have classes that embody other classes. You may implement them as normal objects, and use <code>ooc_new()</code> in the outer objects constructor, to allocate and build the related object, like:
+
+<pre class="example">     ClassMembers( Foo, Base )
+         Bar    bar;
+     EndOfClassMembers;
+     
+         ....
+     
+     static
+     void
+     Foo_constructor( Foo self, const void * params )
+     {
+         chain_constructor( Foo, self, NULL );
+     
+         bar = ooc_new( Bar, params );
+     }
+     
+     static
+     void
+     Foo_destructor( Foo self, FooVtable vtab )
+     {
+         ooc_delete_and_null( (Object*) &amp; self-&gt;bar );
+     }
+</pre>
+   <p>
+In this example Foo object can be considered, that it <em>has</em> a Bar object as a member. But this way of constructing the Foo object is not effective, because there are two memory allocations: one for Foo and the other for Bar in Foo's constructor. This requires more time, and leads to more fragmented memory. It would be a better idea to include the body of the Bar object completly into the Foo object. You can do it, but must take care, that you must use <code>ooc_use</code> and <code>ooc_release</code> instead of <code>ooc_new</code> and <code>ooc_delete</code> respectively, because there is no need for additional memory allocation and deallocation for the Bar object!<br>
+The above example rewritten:
+
+<pre class="example">     ClassMembers( Foo, Base )
+         struct BarObject    bar;
+     EndOfClassMembers;
+     
+         ....
+     
+     static
+     void
+     Foo_constructor( Foo self, const void * params )
+     {
+         chain_constructor( Foo, self, NULL );
+     
+         ooc_use( &amp; self-&gt;bar, Bar, params );
+     }
+     
+     static
+     void
+     Foo_destructor( Foo self, FooVtable vtab )
+     {
+         ooc_release( (Object) &amp; self-&gt;bar );
+     }
+</pre>
+   <p>Less malloc(), better performance!<br>
+Of course, in this case you can access the member of the included Bar objects a bit different: instead of <code>self-&gt;bar-&gt;data</code> you must reference as <code>self-&gt;bar.data</code>.<br>
+
+Never use the object inclusion for reference counted objects! The reference counting will not work for included objects!
+
+
+
+   </body></html>
+

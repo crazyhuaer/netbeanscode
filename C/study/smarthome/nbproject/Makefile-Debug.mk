@@ -43,9 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/cii/mem.o \
 	${OBJECTDIR}/cii/ring.o \
 	${OBJECTDIR}/cii/stack.o \
-	${OBJECTDIR}/cii/swtch.o \
 	${OBJECTDIR}/cii/table.o \
-	${OBJECTDIR}/cii/thread.o \
 	${OBJECTDIR}/lib_network.o \
 	${OBJECTDIR}/lib_system.o \
 	${OBJECTDIR}/log.o \
@@ -63,7 +61,7 @@ CXXFLAGS=
 FFLAGS=
 
 # Assembler Flags
-ASFLAGS=
+ASFLAGS=-Dalpha
 
 # Link Libraries and Options
 LDLIBSOPTIONS=
@@ -116,19 +114,10 @@ ${OBJECTDIR}/cii/stack.o: cii/stack.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/stack.o cii/stack.c
 
-${OBJECTDIR}/cii/swtch.o: cii/swtch.s 
-	${MKDIR} -p ${OBJECTDIR}/cii
-	$(AS) $(ASFLAGS) -g -o ${OBJECTDIR}/cii/swtch.o cii/swtch.s
-
 ${OBJECTDIR}/cii/table.o: cii/table.c 
 	${MKDIR} -p ${OBJECTDIR}/cii
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/table.o cii/table.c
-
-${OBJECTDIR}/cii/thread.o: cii/thread.c 
-	${MKDIR} -p ${OBJECTDIR}/cii
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cii/thread.o cii/thread.c
 
 ${OBJECTDIR}/lib_network.o: lib_network.c 
 	${MKDIR} -p ${OBJECTDIR}

@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+<title>Using Classes - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Exception-handling.html#Exception-handling" title="Exception handling">
+<link rel="next" href="Implementing-Classes.html#Implementing-Classes" title="Implementing Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-Classes"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Implementing-Classes.html#Implementing-Classes">Implementing Classes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Exception-handling.html#Exception-handling">Exception handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">4 Using Classes</h2>
+
+<p>
+
+<h3 class="section">4.1 Initializing the class</h3>
+
+<p>
+Before you can use your class, you must initialize it! Initializing a class will automatically initialize its superclasses, so if you have inherited your class from occ system classes (like RefCounted), you do not have to initialize them separately. However, because <strong>ooc</strong> uses the <code>Exception</code> class internally, you must initialize it before calling any ooc function.
+
+<pre class="example">     
+     int
+     main( int argc, char * argv[] )
+     {
+         ooc_init_class( Exception );
+         ooc_init_class( MyClass );
+     
+         do_my_program();
+     
+         return 0;
+     }
+     
+</pre>
+   <p>
+
+<h3 class="section">4.2 Creating an object of a class</h3>
+
+<p>
+Creating an object is easy with the <code>ooc_new</code> marco, or with the equivalent <code>ooc_new_classptr</code> function.
+   <pre class="sp">
+
+</pre>
+The <code>ooc_new( classname, void * param )</code> macro converts the Class name to the appropriate class description table address, and calls the <code>ooc_new_classptr</code> function. Use <code>ooc_new</code> when you create your class from a statically known class (you know the class name). The second parameter is passed to the class constructor code without any modification or check. You can parameterize your constructor this way, it is advisable passing a variable or struct pointer here. The variable or the struct must exist until the constructor returns!
+   <pre class="sp">
+
+</pre>
+The <code>ooc_new_classptr( Class class_ptr, void * param )</code> function creates an object of the class pointed by the first parameter. Use this function when you know only the class description table's address! This is very rare situation, and I guess it is mainly useful inside the <strong>ooc</strong> code. The second parameter is passed to the class constructor code without any modification or check.
+   <pre class="sp">
+
+</pre>
+The above methods return objects of <code>Object</code> type.
+   <pre class="sp">
+
+</pre>
+Although using the <code>ooc_new</code> macro for object creation is easy, it is advisable to define a parameterized <code>..._new()</code> function for each class, because that way you can control the parameter checking, as well as the automatic conversion of return type (<code>ooc_new</code> returns <code>Object</code> that you must cast to the desired type).
+
+<pre class="example">     
+     String str_new( char * initial )
+     {
+         return ooc_new( String, initial );
+     }
+     
+</pre>
+   <p>
+
+<h3 class="section">4.3 Deleting an object</h3>
+
+<p>The created objects must be deleted with one of the deletion functions. They <em>must not</em> be freed with the standard memory handling functions, like <code>free</code> or <code>ooc_free</code>!
+
+
+<h4 class="subsection">4.3.1 Deleting an object directly</h4>
+
+<p>Deleting an object can be done with the <code>ooc_delete( Object )</code> function. It calls the class destructors on the object, and frees the allocated memory. Any pointer to this object will not be usable after deleting the object!
+Use this way an object destruction when you would like to destroy objects that you did allocate temporarily in your C functions as local variables.
+
+
+<h4 class="subsection">4.3.2 Deleting object via pointer</h4>
+
+<p>In many cases it is important to mark that the object has been deleted by nulling the pointer. But this operation rises some issues regarding circular object references, destroying non-complete ojects and multi-threading.
+   <pre class="sp">
+
+</pre>
+For your convenience there is the object deletion function via its pointer, <code>ooc_delete_and_null( Object *)</code>, which does exactly the same in a thread-safe (or at least reentrant) way.
+
+<pre class="example">     
+     void String_destructor( String self, StringVtable vtab )
+     {
+         /* Deletes the member object and nulls the pointer */
+         ooc_delete_and_null( &amp; self-&gt;other );
+     }
+     
+</pre>
+   <p>
+Always use this way a object destruction when you would like to destroy objects that you did allocate globally or as members of other classes! Especially it is important in class destructor codes! (Since ooc 1.0, it is guaranteed that the destructor runs only once. However it is still recommended nulling pointers in your code when deleting, just for clarity.)
+
+
+<h3 class="section">4.4 Accessing class members</h3>
+
+<p>The class members can be accessed via the object pointer if they are made public, although it is not an advisable method. It is recommended accessing the class members only via the class methods.
+
+
+<h3 class="section">4.5 Finalizing a class</h3>
+
+<p>A class can be finalized when no longer needed, although it is not necessarily required. If your class has reserved some global resources, then you can release them in the class' finalize code.
+One may neglect finalizing, if known, that the class did not allocate any global resources. However it is a good practice to finalize the classes that are not needed in the future, especially in dinamically loadable modules.
+
+You can finalize all initialized classes:
+
+<pre class="example">     ooc_finalize_all( );
+</pre>
+   <p>as the last executed line in your code. In case of <code>ooc_finalize_all()</code> the class finalization is done in the reverse order of initialization.
+
+However <code>ooc_finalize_all()</code> is the preferred way, you can finalize a given class, like:
+
+<pre class="example">     ooc_finalize_class( String );
+</pre>
+   <p>
+But be very carefull, here! If you finalize a class that would be required for using or finalizing an other class then your code will crash! <code>ooc_finalize_all()</code> keeps track of class dependencies, so this problem does not exist that case.
+
+
+<h3 class="section">4.6 Dynamic type checking</h3>
+
+<p>
+<strong>ooc</strong> provides dynamic type safety for your objects, because the object types are known in run time. You can safely cast <code>Object</code>s using the <code>ooc_cast</code> macro. If the cast fails then <code>err_bad_cast</code> exception is thrown. An example of using the dynamic cast in ooc:
+
+<pre class="example">     DeclareClass( String, Base );
+     DeclareClass( Utf8, String );
+     DeclareClass( Something, Base );
+     
+     Something something = something_new();
+     Utf8   my_utf8_string = utf8_new( "This is an utf8 string." );
+     String my_string;
+     
+     my_string = ooc_cast( my_utf8_string, String ); /* Correct */
+     my_string = ooc_cast( something, String );      /* Can not be cast,
+                                                        exception is thrown */
+</pre>
+   <p>
+You can also retrieve the type of an <code>Object</code>. The <code>ooc_get_type</code> function returns the type of an object in run time (actually returns a pointer to the class description table). If the parameter is not a valid <code>Object</code> then <code>err_bad_cast</code> exception is thrown. An example of retriving of the object type in ooc:
+
+<pre class="example">     String my_string = string_new( "Test string." );
+     
+     printf( "The type of my_string is: %s\n", ooc_get_type( my_string )-&gt;name );
+</pre>
+   <p>This example prints <code>The type of my_string is: String</code> on the display.
+   <pre class="sp">
+
+</pre>
+You can use this function for comparing object types, like
+<pre class="example">     if( ooc_get_type( my_object ) == &amp; StringClass )
+         ... process my_object as a String object here
+     else if ( ooc_get_type( my_object ) == &amp; SomeOtherClass )
+             ... process my_object as a SomeOther object here
+</pre>
+   <p>Please note the <code>Class</code> suffix to the object's typename. This pointer to the static class description table is defined for each class.
+   <pre class="sp">
+
+</pre>
+But there is a more convenient way for dynamic type checking in ooc, that handles the class inheritance correctly. The <code>ooc_isInstanceOf</code> macro returns <code>TRUE</code> if the object is an instance of a given class or of any of its superclasses, <code>FALSE</code> otherwise. The typical use of this kind type checking is at the very beginning of the class methods, to make sure that the parameter object is of the right type. Because this is a bit computationally "expensive" operation, it is usually placed into an <code>assert</code> macro, that lets you some control distinguishing debug and release versions.
+
+<pre class="example">     void
+     string_example_method( String self )
+     {
+         assert( ooc_isInstanceOf( self, String ) );
+     
+         /* Do your method here!
+            You can be sure, that self is a valid
+            instance of String class.
+            (At least in the debug version!)
+         */
+     }
+</pre>
+   <p>
+
+
+   </body></html>
+

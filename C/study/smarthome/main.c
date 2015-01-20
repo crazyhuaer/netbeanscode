@@ -66,25 +66,30 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////////////////////////////
     Table_T table = Table_new(0,NULL,NULL);
     
-//    int *fd;
-//    NEW(fd);
-//    *fd = 15;
-//     
-//    int *counts;
-//    NEW(counts);
-//    *counts = 23;
-//    
-//    Table_put(table,fd,counts);
-//    
-//    int *values = (int *)Table_get(table,fd);
-//    if (values) {
-//        printf("key:%d,value:%d\n",*fd,*values);
-//    } else {
-//        printf("can't get value by key:%d\n",*fd);
-//    }
-//
-//    int table_length = Table_length(table);
-//    printf("table length:%d\n",table_length);
+    int fd = 15;
+     
+    int counts = 23;
+    
+    Table_put(table,&fd,&counts);
+    
+    int *values = (int *)Table_get(table,&fd);
+    if (values) {
+        printf("key:%d,value:%d\n",fd,*values);
+        int count = 30;
+        Table_put(table,&fd,&count);
+        
+        values = (int *)Table_get(table,&fd);
+        if (values) {
+            printf("key:%d,value:%d\n",fd,*values);
+        }
+        
+        
+    } else {
+        printf("can't get value by key:%d\n",fd);
+    }
+
+    int table_length = Table_length(table);
+    printf("table length:%d\n",table_length);
     
     Table_map(table,vfree,NULL);
     Table_free(&table);
@@ -129,7 +134,7 @@ int main(int argc, char** argv) {
     
     
     //////////////////////////////////////////////////////////////////////////////
-    //return 0; 
+    return 0; 
     // end
     //////////////////////////////////////////////////////////////////////////////
     // init var

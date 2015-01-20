@@ -1,0 +1,292 @@
+<html lang="en">
+<head>
+<title>Objects and Classes - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Introduction.html#Introduction" title="Introduction">
+<link rel="next" href="Exception-handling.html#Exception-handling" title="Exception handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Objects-and-Classes"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Exception-handling.html#Exception-handling">Exception handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introduction.html#Introduction">Introduction</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">2 Objects and Classes</h2>
+
+<p>
+Class is the type of an Object instance. It specifies its data and function members and methods. We use the same terminology as in C++ here.
+   <pre class="sp">
+
+</pre>
+Before an Object could be used, it must be instantiated. 
+   <pre class="sp">
+
+</pre>
+The Classes and Objects are located in the memory, as the following section describes.
+
+
+<h3 class="section">2.1 Underlying data structure</h3>
+
+<p>
+<div class="float">
+<a name="fig_003aex1"></a><div align="center"></div>
+<div class="block-image"><img src="ooc_doc_data.png" alt="ooc_doc_data.png"></div>
+
+<p><strong class="float-caption">Figure 2.1: Underlying data structure</strong></p></div>
+   <pre class="sp">
+
+</pre>
+
+The Class description table and the Virtual table are allocated statically in compilation time while the Object instances are allocated dynamically on the heap in run time. The Class allocation table is fully initialized at compilation time, while the Virtual Table must be initialized in run time before the Class is used. Due to this limitation it is not possible allocating Objects statically on the heap.
+   <pre class="sp">
+
+</pre>
+There is always a Virtual table, even if the class does not have a virtual function. In this case it is just a single pointer to the Class description table.
+   <pre class="sp">
+
+</pre>
+
+
+
+<h3 class="section">2.2 Inheritance</h3>
+
+<p>
+In ooc single inheritance is supported. The physical implementation of inheritance is embedding the parent class members into the beginning of the instantiated object.
+
+Real multiple inheritance is not supported because of considering run time effectiveness on slower computers; plus trying to avoid complex inheritance problems that may occur in case of multiple inheritance, and a good solution for them would require more support from the compiler.
+
+However since version 1.3 <strong>ooc</strong> supports the use of interfaces and mixins providing a kind of multiple inheritance.
+
+In every class definition macros we use two parameters:
+     <ul>
+<li>First parameter is the name of the class, while the
+<li>Second parameter is the name of the parent class.
+</ul>
+   
+If a class is a base class (has no parent class), we shall mark it as it parent class was <code>Base</code>. Therefore <code>Base</code> is a reserved class name in <strong>ooc</strong>!
+
+<pre class="example">     
+     DeclareClass( String, Base );       /* String is a Base class */
+     
+     DeclareClass( Utf8, String );       /* Utf8 is a class inherited from String */
+     
+</pre>
+   <p>
+
+<h3 class="section">2.3 Class data members</h3>
+
+<p>
+Class definitions are basically nested struct definitions. That means that you can access data members via their names, as they were accessed as struct members. There is an important rule, that accessing the parent class's data members requires a prefix with the parent class's name before the data member name. This is because the standard ANSI C does not allow the use of unnamed struct, and I wanted to be ANSI compliant for better portability.
+
+<pre class="example">     
+     ClassMembers( String, Base )
+             
+         char *    cstr;
+         int       length;
+     
+     EndOfClassMembers;
+     
+     ClassMembers( Utf8, String )
+             
+          int       num_of_chars;
+     
+     EndOfClassMembers;
+     
+     /**********************************
+      *  Accessing data members
+      */
+     
+         String my_string;
+         Utf8   my_utf8;
+         int i;
+     
+         i =  my_string-&gt;length;        /* Accessing a class member */        
+     
+         i =  my_utf8-&gt;num_of_chars;    /* Accessing a class member */
+     
+         i =  my_utf8-&gt;String.length;   /* Accessing class member inherited from the parent class */
+     
+</pre>
+   <p>
+
+<h3 class="section">2.4 Member functions</h3>
+
+<p>
+A class member function is a normal C function, but there is a very important rule: the first function parameter of a member function is always a class instance object, and this first parameter can not be omitted.
+
+<pre class="example">     
+     void   str_upper( String ); /* Declaring a member function */
+     
+     void   str_upper( String self ) /* Defining a member function */
+     {
+         int i;
+         assert( ooc_isInstanceOf( self, String ) );
+     
+         for( i=0; i&lt;self-&gt;length; i++ )
+             self-&gt;cstr[i] = cupper( self-&gt;cstr[i] );
+     }  
+     
+     str_upper( my_string );   /* Calling a member function */
+     
+</pre>
+   <p>
+As a naming convention it is a good idea to start all class member function's name with the name of the class, or with a meaningful abbreviation.
+
+
+
+<h3 class="section">2.5 Virtual functions</h3>
+
+<p>
+Virtual functions have the same requirement: their mandatory first parameter is an object instance pointer.<br>
+Virtual functions are implemented as static functions in the class implementation file, and the class's virtual table holds pointers to these static functions.<br>
+Virtual functions are called via their function pointers in the vtable. 
+   <pre class="sp">
+
+</pre>
+The vtable itself is basically a struct holding function pointers to the implemented static functions. The calling via these function pointers provides us the capability for compilation time type and parameter checking.
+   <pre class="sp">
+
+</pre>
+For virtual function calls we use the macros and inline functions. <br>
+For those compilers that the inline functions are not supported there is a function version for virtual function calls, but that is slower of course. This is the price for the better type safety.
+
+
+<pre class="example">     
+     /* Defining a virtual function */
+     Virtuals( String, Base )
+             
+         int (* str_get_tokens)( String );
+     
+     EndOfVirtuals;
+     
+     /* Calling a virtual function; from the user point of view */
+     int len;
+     String my_string;
+     
+     len = StringVirtual( my_string )-&gt;str_get_tokens( my_string );
+     
+     /* Implementing the virtual function in the class implementation file */
+     
+     static int virtual_str_get_tokens( String self )
+     {
+         /* doing some important here with self */
+         return result;
+     }
+     
+     /* Initializing the virtual table in the class initialization handler */
+     
+     static void String_init( )
+     {
+         StringVtableInstance.str_get_tokens   =   virtual_str_get_token;
+     }
+     
+</pre>
+   <p>
+
+<h4 class="subsection">2.5.1 Overridden virtual functions</h4>
+
+<p>
+Overriding the parent class's virtual functions is very easy in the class implementation file. It can be done in the class initialization code.
+
+<pre class="example">     
+     /* Defining the virtual table */
+     Virtuals( Utf8, String )
+                                       /* In this case there are no new Virtual functions, only the parent's ones */
+     EndOfVirtuals;
+     
+     /* Implementing the virtual function in the class implementation file */
+     
+     static int utf8_get_tokens( String self )
+     {
+         /* doing some important here with self */
+         return result;
+     }
+     
+     /* Overriding the parent's virtual function pointer in the virtual table in the class initialization handler */
+     
+     static void Utf8_init( Class class )
+     {
+         Utf8VtableInstance.String.str_get_tokens   =   utf8_get_token;
+     }
+     
+     /* In the class's user code you can call the virtual in the same way: */
+     
+     len = Utf8Virtual( my_utf8 )-&gt;String.str_get_tokens( (String) my_utf8 );
+     
+</pre>
+   <p>
+
+<h4 class="subsection">2.5.2 Calling parent's virtual functions</h4>
+
+<p>
+If you would like to call the parent class's virtual function (this may be necessary in the implementation code when you would like to chain the new class's virtual function to the parent's one, you can use other macro accessing the original (non-overridden) function:
+
+<pre class="example">     
+     static int utf8_get_tokens( String self )
+     {
+         /* doing some important stuff here with self,
+            then chaining to the original parent's function: */
+             
+         return Utf8ParentVirtual( self )-&gt;str_get_tokens( self );
+     }
+     
+</pre>
+   <p>
+
+
+<h3 class="section">2.6 Class description table</h3>
+
+<p>
+The Class description table is completely hidden from the user of the class. It is a static struct in the heap, created and initialized at compilation time.
+The identifier of the class is the address of this class description table, so you must refer to the class with the "address of" operator and the class name.
+
+You can allocate the class description table, the virtual table and some other helpers with a single macro:
+
+<pre class="example">     
+     AllocateClass( String, Base );
+     
+     AllocateClass( Utf8, String );
+     
+</pre>
+   <p>
+
+   </body></html>
+

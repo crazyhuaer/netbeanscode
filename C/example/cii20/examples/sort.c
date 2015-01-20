@@ -2,10 +2,10 @@ static char rcsid[] = "$Id: sort.c 197 2008-09-27 21:59:31Z drhanson $" "\n$Id: 
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "assert.h"
-#include "fmt.h"
-#include "thread.h"
-#include "mem.h"
+#include "../include/assert.h"
+#include "../include/fmt.h"
+#include "../include/thread.h"
+#include "../include/mem.h"
 struct args {
 	int *a;
 	int lb, ub;

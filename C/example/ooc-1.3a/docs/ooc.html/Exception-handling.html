@@ -1,0 +1,253 @@
+<html lang="en">
+<head>
+<title>Exception handling - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Objects-and-Classes.html#Objects-and-Classes" title="Objects and Classes">
+<link rel="next" href="Using-Classes.html#Using-Classes" title="Using Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Exception-handling"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-Classes.html#Using-Classes">Using Classes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Objects-and-Classes.html#Objects-and-Classes">Objects and Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">3 Exception handling</h2>
+
+<p>
+However the exception handling from the user's point of view is very similar to the exception handling in C++, there are very significant differences that you must keep in mind!
+In <strong>ooc</strong> the key differences are:
+     <ul>
+<li>There is <em>no</em> stack unwinding!
+<li>You must consider the side effects of optimizing compilers.
+<li>There is an additional <code>finally</code> option.
+<li>You must close the section with an <code>end_try</code> statement.
+<li>Every executed <code>try</code> must have an executed <code>end_try</code>!
+</ul>
+
+   <pre class="sp">
+
+</pre>
+Being able to use the exceptions you must include the <code>exception.h</code> header file, and call <code>ooc_init_class( Exception );</code> at the very beginning of your code! Because <strong>ooc</strong> uses the exceptions internally, you must always initialize the <code>Exception</code> class in your code before using any other <strong>ooc</strong> features!
+
+
+<h3 class="section">3.1 Throwing an exception</h3>
+
+<p>
+Throwing an exception is very easy with the <code>ooc_throw()</code> instruction. The parameter of the <code>ooc_throw()</code> is any <code>Object</code>. The object is "owned" by the exception handling mechanism and will be deleted by it, so never delete it yourself, and never throw an object, that you would like to use later.
+In practice I recommend throwing newly created objects of <code>Exception</code> class or its subclasses, like:
+
+<pre class="example">     if( error )
+         ooc_throw( str_exception_new( str_error_code ));
+</pre>
+   <p>
+You can use <code>ooc_rethrow()</code> as well for passing the actual exception to the caller, but only inside a <code>catch()</code> or in a <code>catch_any</code> block.
+
+
+<h3 class="section">3.2 Catching an exception</h3>
+
+<p>
+You can catch the thrown exceptions with the <code>catch()</code> or <code>catch_any</code> blocks.
+
+The <code>catch( Class )</code> block catches the objects of the specified class or its parent (super-) classes. The caught object is stored in a variable called <code>Exception exception</code>, that is automatically defined and can be used only within the <code>catch</code> block.
+   <pre class="sp">
+
+</pre>
+The <code>catch_any</code> block catches all exceptions that were not handled by the earlier <code>catch</code> blocks. It is typically used for cleanup and rethrow of exception that could not be handled locally.
+You can use as many <code>cath()</code> blocks, as many you need, plus one <code>catch_any</code> block as the last one. Be careful with the ordering of the <code>catch()</code> blocks: catching a class means catching <em>all of the parent classes</em> as well.
+
+<h3 class="section">3.3 Finalize the exception handling</h3>
+
+<p>
+You can notice, that there is a <code>finally</code> option as well, that will run in every case. It is very important that codes in the <code>finally</code> block can not fail (can not throw any exception)! This section will run in every case, regardless of the existence of an exception, or if it was caught or not.
+The finally block must be the last section of a <code>try ... end_try</code> block.
+
+
+<h3 class="section">3.4 Closing the <code>try</code> block</h3>
+
+<p>
+You must close the <code>try</code> block sequence with an <code>end_try;</code> statement.
+You don't have to use all of the possible blocks in the <code>try ... end_try</code> block, however at least one <code>catch</code> or <code>catch_any</code> or <code>finally</code> block must be used.
+Every executed <code>try</code> must have an executed <code>end_try</code>! In practice this means that you must NOT <code>return</code> from within the <code>try</code> block! (Or jump out with <code>goto</code>, but who does use it? :-))
+
+
+<h3 class="section">3.5 Protecting dynamic memory blocks and objects</h3>
+
+<p>
+Unlike C++ there is no stack unwinding during the exception handling! Consequently you must pay extra attention on memory handling in your routines: make sure that every temporarily allocated memory block is freed in case of an exception rises in the routine or in routines called. The simplest solution is a <code>try ... finally ... end_try</code> block. It is relatively not computationally expensive, and is effective.
+For example the code below will lead to memory leak if there would arise an exception:
+
+<pre class="example">     void my_func( void )
+     {
+         char * mem;
+     
+         mem = ooc_malloc( 1000 );
+     
+         do_a_risky_call(); /* If this code throws an exception then  */
+                            /* the mem will never be freed, causing a */
+         ooc_free( mem );   /* memory leak!                           */
+     }
+</pre>
+   <p>
+The correct solution is protecting the sensible variables like follows:
+
+<pre class="example">     void my_func( void )
+     {
+         char * volatile mem = NULL;
+     
+         try {
+             mem = ooc_malloc( 1000 );
+     
+             do_a_risky_call();
+             }
+         finally {
+             ooc_free( mem );
+             }
+         end_try;
+     }
+</pre>
+   <p>
+Listen to the followings in the above code:
+
+     <ul>
+<li>Use <code>volatile</code> storage class specifier for those variables that change their value in the <code>try</code> code section, and you would like to use this new value in any of the <code>catch</code> or <code>finally</code> blocks, or after the <code>end_try</code> statement!
+This is necessary, because the <code>try</code> solution is based on <code>setjmp/longjmp</code>,  that may change the register values, so we must prevent optimizing compilers using registers for these variables. Forgetting setting <code>volatile</code> typically brings you in a situation where the debugged code works properly, but the optimized release fails while handling exceptions.
+     <pre class="sp">
+     
+     </pre>
+     <li>Initialize the pointer variable with <code>NULL</code>!
+This is necessary because the local variable is located on the stack, and gets a random starting value. If you forget the initialization, and the memory allocation would fail, then freeing this pointer in the <code>finally</code> section would refer to an undefined memory block, and most probably would cause a segmentation fault.
+</ul>
+   
+   <pre class="sp">
+
+</pre>
+In most cases you want to prevent memory leak only, and do not necessarily need to get the control in the case of an exception. For those situations there is a simpler mechanism described in the next section.
+
+
+<h3 class="section">3.6 Managed pointers</h3>
+
+<p>
+In <strong>ooc</strong> you have an other option for preventing memory leaks in case of an exception: the managed pointers. Using managed pointers you will not get the program control in case of an exception, but it is guaranteed, that the memory is freed or the Object is deleted in case of an exception. (You may consider this as analogie for <code>std::auto_ptr&lt;&gt;</code> in C++.) <br>
+Using managed pointers is faster than using the <code>try ... finally ... end_try</code> constructs, so it is more advisable if you do not need the program control in case of an exception.
+
+
+<h4 class="subsection">3.6.1 Managing a pointer</h4>
+
+<p>Managing a pointer means that <strong>ooc</strong> will take care of freeing the resouce in case of an exception. You can manage a pointer with the <code>ooc_manage()</code> macro. This macro pushes the pointer (and the corresponding destroyer function) to the top of the managed pointers stack.<br>
+If there is an exception thrown, <strong>ooc</strong> will continue the program execution at the next <code>catch</code> or <code>finally</code> statement, and takes care that all memory or Objects that are referenced by the managed pointers pushed onto the stack, are freed or deleted respectively till that point.<br>
+If there was no exception thrown, you must remove the pointer from the stack with the <code>ooc_pass()</code> macro.<br>
+Because the managed pointers' stack is a <em>stack</em>, you can remove the most recently pushed item only: you must use <code>ooc_pass()</code> always in the reverse order of using <code>ooc_manage()</code>!<br>
+Use <code>ooc_manage()</code> / <code>ooc_manage_object()</code> and <code>ooc_pass()</code> always as a pair in the same 
+name scope! These macros use local variables, and the variable created by <code>ooc_manage()</code> must be 
+accessible by <code>ooc_pass()</code>! Never let <code>ooc_manage()</code> be executed more than once without executing
+the corresponding <code>ooc_pass()</code> before!<br>
+To be ANSI-C compliant, the <code>ooc_manage()</code> and <code>ooc_manage_object()</code> macros always must preceed any statement in the given namespace! (This is because they define a local variable.) In practice this means that you must open a new name scope with { if you'd like to use the managed pointer in the middle of your code. Close this name scope only after passing the managed pointer. You can nest more namescopes when using multiple managed pointers. See the first example!
+
+
+
+<h5 class="subsubsection">3.6.1.1 Manage a pointer: <code>ooc_manage()</code></h5>
+
+<p>Pushes a pointer onto the top of the managed pointers' stack.<br>
+<code>ooc_manage()</code> requires two parameters: the pointer to the resource and the appropriate destroyer function for it (typically <code>ooc_delete</code> or <code>ooc_free</code>).<br>
+<code>ooc_manage()</code> does not return anything.
+
+
+<h5 class="subsubsection">3.6.1.2 Manage an Object: <code>ooc_manage_object()</code></h5>
+
+<p>Manages an Object like <code>ooc_manage()</code>. <br>
+This is shortcut for <code> ooc_manage( my_object, (ooc_destroyer) ooc_delete );</code>.
+
+
+<h5 class="subsubsection">3.6.1.3 Pass the ownership: <code>ooc_pass()</code></h5>
+
+<p>Removes the most recently pushed pointer from the managed pointers' stack. Always use in the reverse order of using <code>ooc_manage()</code>!<br>
+<code>ooc_pass()</code> requires one parameter: the pointer to be removed.<br>
+Please note that since the most recently pushed pointer is removed, the parameter is used only for verification that the push an pop orders are correct! (In release versions this verification is skipped for gaining some speed.)<br>
+<code>ooc_pass()</code> returns the pointer itself.<br>
+The name is coming from passing the ownership of the pointer to an other object or function.
+
+
+
+<h4 class="subsection">3.6.2 Examples</h4>
+
+<h5 class="subsubsection">3.6.2.1 Protecting temporary memory allocation</h5>
+
+<p>In the previous section we used <code>try ... finally ... end_try</code> to prevent memory leak for a temporary memory allocation. The same with managed pointer:
+<pre class="example">     void my_func( void )
+     {
+         char * mem;
+     
+         mem = ooc_malloc( 1000 );
+         {
+             ooc_manage( mem, ooc_free );
+     
+             do_a_risky_call();
+     
+             ooc_free( ooc_pass( mem ) );
+         }                      
+     }
+</pre>
+   <p>Simplier, faster.
+
+<h5 class="subsubsection">3.6.2.2 Taking over the ownership of parameters</h5>
+
+<pre class="example">     void foo_add_bar( Foo self, Bar bar )
+     {
+         ooc_manage( bar, (ooc_destroyer) ooc_delete );
+     
+         do_a_risky_call();
+     
+         /* pass the ownership of bar to self  */
+         self-&gt;bar = ooc_pass( bar );                      
+     }
+     
+     Foo foo;
+     
+     foo = foo_new();
+     
+     foo_add_bar( foo, bar_new() ); /* this code is safe! */
+</pre>
+   <p>If you we're not using managed pointers for taking over the ownership of the parameter then the parameter object would be leaked in case of an exception in the <code>do_a_risky_call()</code> method.
+
+
+
+   </body></html>
+

@@ -1,0 +1,229 @@
+<html lang="en">
+<head>
+<title>Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="#Top">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled "GNU   Free
+     Documentation License".  (a) The FSF's Back-Cover Text is:
+     "You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom."
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+
+
+<div class="node">
+<a name="Top"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Introduction.html#Introduction">Introduction</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Object Oriented C (ooc) toolkit</h2>
+
+<p>This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright &copy;Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+<blockquote>
+Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.2
+  or any later version published by the Free Software Foundation;
+  with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+  Texts.  A copy of the license is included in the section entitled &ldquo;GNU
+  Free Documentation License&rdquo;.
+
+(a) The FSF's Back-Cover Text is: &ldquo;You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.&rdquo;
+</blockquote>
+   
+<img src="logo64px.png" alt="logo64px.png">
+
+
+<ul class="menu">
+<li><a accesskey="1" href="Introduction.html#Introduction">Introduction</a>
+<li><a accesskey="2" href="Objects-and-Classes.html#Objects-and-Classes">Objects and Classes</a>
+<li><a accesskey="3" href="Exception-handling.html#Exception-handling">Exception handling</a>
+<li><a accesskey="4" href="Using-Classes.html#Using-Classes">Using Classes</a>
+<li><a accesskey="5" href="Implementing-Classes.html#Implementing-Classes">Implementing Classes</a>
+<li><a accesskey="6" href="Interfaces.html#Interfaces">Interfaces</a>
+<li><a accesskey="7" href="Memory-handling.html#Memory-handling">Memory handling</a>
+<li><a accesskey="8" href="Unit-testing-support.html#Unit-testing-support">Testing your classes </a>: <li><a accesskey="9" href="Class-manipulation-tool.html#Class-manipulation-tool">Type less, produce more </a>: <li><a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Copying This Manual </a>: <li><a href="Table-of-Figures.html#Table-of-Figures">Table of Figures</a>
+<li><a href="Indices.html#Indices">Index </a>: </ul>
+
+   <div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="index.html#Top">Object Oriented C (ooc) toolkit</a>
+<li><a name="toc_Introduction" href="Introduction.html#Introduction">1 Introduction</a>
+<li><a name="toc_Objects-and-Classes" href="Objects-and-Classes.html#Objects-and-Classes">2 Objects and Classes</a>
+<ul>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.1 Underlying data structure</a>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.2 Inheritance</a>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.3 Class data members</a>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.4 Member functions</a>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.5 Virtual functions</a>
+<ul>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.5.1 Overridden virtual functions</a>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.5.2 Calling parent's virtual functions</a>
+</li></ul>
+<li><a href="Objects-and-Classes.html#Objects-and-Classes">2.6 Class description table</a>
+</li></ul>
+<li><a name="toc_Exception-handling" href="Exception-handling.html#Exception-handling">3 Exception handling</a>
+<ul>
+<li><a href="Exception-handling.html#Exception-handling">3.1 Throwing an exception</a>
+<li><a href="Exception-handling.html#Exception-handling">3.2 Catching an exception</a>
+<li><a href="Exception-handling.html#Exception-handling">3.3 Finalize the exception handling</a>
+<li><a href="Exception-handling.html#Exception-handling">3.4 Closing the <code>try</code> block</a>
+<li><a href="Exception-handling.html#Exception-handling">3.5 Protecting dynamic memory blocks and objects</a>
+<li><a href="Exception-handling.html#Exception-handling">3.6 Managed pointers</a>
+<ul>
+<li><a href="Exception-handling.html#Exception-handling">3.6.1 Managing a pointer</a>
+<ul>
+<li><a href="Exception-handling.html#Exception-handling">3.6.1.1 Manage a pointer: <code>ooc_manage()</code></a>
+<li><a href="Exception-handling.html#Exception-handling">3.6.1.2 Manage an Object: <code>ooc_manage_object()</code></a>
+<li><a href="Exception-handling.html#Exception-handling">3.6.1.3 Pass the ownership: <code>ooc_pass()</code></a>
+</li></ul>
+<li><a href="Exception-handling.html#Exception-handling">3.6.2 Examples</a>
+<ul>
+<li><a href="Exception-handling.html#Exception-handling">3.6.2.1 Protecting temporary memory allocation</a>
+<li><a href="Exception-handling.html#Exception-handling">3.6.2.2 Taking over the ownership of parameters</a>
+</li></ul>
+</li></ul>
+</li></ul>
+<li><a name="toc_Using-Classes" href="Using-Classes.html#Using-Classes">4 Using Classes</a>
+<ul>
+<li><a href="Using-Classes.html#Using-Classes">4.1 Initializing the class</a>
+<li><a href="Using-Classes.html#Using-Classes">4.2 Creating an object of a class</a>
+<li><a href="Using-Classes.html#Using-Classes">4.3 Deleting an object</a>
+<ul>
+<li><a href="Using-Classes.html#Using-Classes">4.3.1 Deleting an object directly</a>
+<li><a href="Using-Classes.html#Using-Classes">4.3.2 Deleting object via pointer</a>
+</li></ul>
+<li><a href="Using-Classes.html#Using-Classes">4.4 Accessing class members</a>
+<li><a href="Using-Classes.html#Using-Classes">4.5 Finalizing a class</a>
+<li><a href="Using-Classes.html#Using-Classes">4.6 Dynamic type checking</a>
+</li></ul>
+<li><a name="toc_Implementing-Classes" href="Implementing-Classes.html#Implementing-Classes">5 Implementing Classes</a>
+<ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.1 Naming conventions</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.2 Source files</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.3 Class user header file</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.4 Class implementation header file</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5 Class implementation file</a>
+<ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.1 Class allocation</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.2 Class initialization</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.3 Class finalization</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.4 Constructor definition</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.5 Copy constructor definition</a>
+<ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.5.1 Using the default copy constructor</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.5.2 Creating your own copy constructor</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.5.3 Disabling the copy constructor</a>
+</li></ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.6 Destructor definition</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.7 Implementing class methods</a>
+<ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.7.1 Non-virtual methods</a>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.5.7.2 Virtual methods</a>
+</li></ul>
+</li></ul>
+<li><a href="Implementing-Classes.html#Implementing-Classes">5.6 Classes that have other classes</a>
+</li></ul>
+<li><a name="toc_Interfaces" href="Interfaces.html#Interfaces">6 Interfaces and multiple inheritance</a>
+<ul>
+<li><a href="Interfaces.html#Interfaces">6.1 What is an interface?</a>
+<ul>
+<li><a href="Interfaces.html#Interfaces">6.1.1 Interfaces and inheritance</a>
+<li><a href="Interfaces.html#Interfaces">6.1.2 Creating an interface</a>
+<li><a href="Interfaces.html#Interfaces">6.1.3 Implementing an interface</a>
+<ul>
+<li><a href="Interfaces.html#Interfaces">6.1.3.1 Adding the interface to the virtual table</a>
+<li><a href="Interfaces.html#Interfaces">6.1.3.2 Implementing the interafce methods</a>
+<li><a href="Interfaces.html#Interfaces">6.1.3.3 Initializing the virtual table</a>
+<li><a href="Interfaces.html#Interfaces">6.1.3.4 Registering the implemented interafces</a>
+<li><a href="Interfaces.html#Interfaces">6.1.3.5 Allocating the class with interfaces</a>
+</li></ul>
+<li><a href="Interfaces.html#Interfaces">6.1.4 Using an interface</a>
+<ul>
+<li><a href="Interfaces.html#Interfaces">6.1.4.1 If the type of the Object is known</a>
+<li><a href="Interfaces.html#Interfaces">6.1.4.2 If the type of the Object is unknown</a>
+</li></ul>
+</li></ul>
+<li><a href="Interfaces.html#Interfaces">6.2 Mixins</a>
+<ul>
+<li><a href="Interfaces.html#Interfaces">6.2.1 Creating a mixin</a>
+<li><a href="Interfaces.html#Interfaces">6.2.2 Implementing a mixin by a carrier class</a>
+<li><a href="Interfaces.html#Interfaces">6.2.3 How mixins work?</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Memory-handling" href="Memory-handling.html#Memory-handling">7 Memory handling</a>
+<ul>
+<li><a href="Memory-handling.html#Memory-handling">7.1 Memory allocation</a>
+<li><a href="Memory-handling.html#Memory-handling">7.2 Freeing the allocated memory</a>
+<li><a href="Memory-handling.html#Memory-handling">7.3 Thread safety</a>
+</li></ul>
+<li><a name="toc_Unit-testing-support" href="Unit-testing-support.html#Unit-testing-support">8 Unit testing support</a>
+<ul>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.1 How to create a unit test?</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2 Writing a unit test</a>
+<ul>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.1 Writing test methods</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.2 Assertions</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.3 Messages</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.4 Overriding virtuals</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.5 Testing exceptions</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.6 Memory leak test</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.7 Unit testing techniques:</a>
+<ul>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.7.1 Inherited test cases</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.7.2 Using fake objects</a>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.7.3 Using mock objects</a>
+</li></ul>
+<li><a href="Unit-testing-support.html#Unit-testing-support">8.2.8 Dependency lookup</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Class-manipulation-tool" href="Class-manipulation-tool.html#Class-manipulation-tool">9 Class manipulation tool</a>
+<li><a name="toc_GNU-Free-Documentation-License" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Appendix A GNU Free Documentation License</a>
+<li><a name="toc_Table-of-Figures" href="Table-of-Figures.html#Table-of-Figures">Table of Figures</a>
+<li><a name="toc_Indices" href="Indices.html#Indices">Index</a>
+</li></ul>
+</div>
+
+
+
+
+   </body></html>
+

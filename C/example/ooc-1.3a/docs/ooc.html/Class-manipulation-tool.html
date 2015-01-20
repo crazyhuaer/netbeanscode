@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Class manipulation tool - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Unit-testing-support.html#Unit-testing-support" title="Unit testing support">
+<link rel="next" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License" title="GNU Free Documentation License">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Class-manipulation-tool"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">GNU Free Documentation License</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Unit-testing-support.html#Unit-testing-support">Unit testing support</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">9 Class manipulation tool</h2>
+
+<p>
+Creating <strong>ooc</strong> classes by typing from scratch may be labor-intensive, error prone, but mostly boring. Fortunatley <strong>ooc</strong> has a tool that helps you create classes from templates, or from other classes that are
+already implemented. This tool is suprisingly called <kbd>ooc</kbd> and is used as follows. Type at the prompt:
+<pre class="example">     ~$ ooc --new MyClass
+</pre>
+   <p>This instruction creates a class called MyClass from the default ooc template, and puts it into the current working directory. Using the default template the following files will be created in the current working directory:
+     <dl>
+
+<dt><kbd>myclass.h</kbd><dd>This is the MyClass header containing the declaration of MyClass class plus its virtual functions. These are
+the publicly available declarations for MyClass, this class is to be included by the users of the class.
+Extend this file with your method declarations as needed.
+
+<br><dt><kbd>myclass.c</kbd><dd>This is the class implementation file. It contains the class allocation, constructor, descructor etc. skeletons.
+You must extend this file with your method definitions, and other code.
+
+<br><dt><kbd>implement/myclass.h</kbd><dd>This is the implementation header. This cointains the declaration of class data members, that are publicly not available. This file must be included by the subclasses of MyClass. (If you create your classes with the <kbd>ooc</kbd> tool with <kbd>--from</kbd> or <kbd>--source</kbd> switches then these includes are handled automatically.)
+
+</dl>
+   
+As you have created your class using the <kbd>ooc</kbd> tool, check the created skeletons, and modify them as needed.
+The created class can not be compiled without some modifications, and this is intentional: this forces you to set the construction parameters properly for example.
+
+The following switches can be used with <kbd>ooc</kbd>. The switches can be combined!
+   <pre class="sp">
+
+</pre>
+
+
+<kbd>ooc</kbd> commands:
+
+     <dl>
+<dt><code>--help</code><dd>Prints the version information and a short help message.
+
+<br><dt><code>--new ClassName</code><dd>Creates a new class named as ClassName.
+
+<br><dt><code>--testsuite</code><dd>Creates a testsuite from the current directory. (Copies all makefiles and testsuite script/batch, that is required for unit testing.)
+</dl>
+   
+   <pre class="sp">
+
+</pre>
+Modifiers for the <kbd>ooc --new ClassName</kbd> command:
+
+     <dl>
+<dt><code>--parent ParentClassName</code><dd>The created class is created as a subclass for ParentClassName. If <code>--parent</code> switch is missing, then <code>Base</code> will be used as parent class.
+
+<br><dt><code>--from SampleClassName</code><dd>Uses SampleClassName as a template. If <code>--from</code> switch is missing, then the default <code>SampleClass</code> template is used. <br>
+If <code>--source</code> switch is not defined then the template class is searched for in the files called <code>sampleclassname.c</code>, <code>sampleclassname.h</code> and <code>implement/sampleclassname.h</code> in the default template directory (usually <code>/usr/local/share/ooc/template</code>).
+
+<br><dt><code>--source filename</code><dt><code>--template filename</code><dd>Uses <code>filename.c</code>, <code>filename.h</code> and <code>implement/filename.h</code> files as the template file. <br>
+If <code>filename</code> is a simple filename (not absolute path) then it is located in the standard template directory (usually <code>/usr/local/share/ooc/template</code>).
+If <code>--from</code> switch is not defined then the default <code>SampleClass</code> is looked for as a template in <code>sampleclassname</code>. <br>
+
+<br><dt><code>--target filename</code><dd>Puts the results into <code>filename.c</code>, <code>filename.h</code> and <code>implement/filename.h</code> files in the current working directory. (Depending on the template used, some files may not be used.)<br>
+Does not overwrite the files, appends the new content to the end of the files.
+</dl>
+   
+The next example creates a Foo class with header and implementation files, and adds FooException to the files as an additional class.
+<pre class="example">     ~$ ooc --new Foo --parent Bar
+     ~$ ooc --new FooException --parent Exception --template private --target foo
+</pre>
+   <p>
+You will have <code>foo.c</code>, <code>foo.h</code> and <code>implement/foo.h</code> files with class definitions and implementations for <code>Foo</code> and <code>FooException</code>.<br>
+
+The following templates are available:
+     <dl>
+<dt><kbd>sample</kbd><dd>The default template. This generates a class with 'protected' data members and implementation header. This class can be subclassed.
+(This is the default if you do not specify a <kbd>--template</kbd> or <kbd>--source</kbd>.)
+
+<br><dt><kbd>private</kbd><dd>Class definition with private members only. This type of class can not be subclassed! (there is no implementation header)
+
+<br><dt><kbd>minimal</kbd><dd>A minimal class definition, only with a class implementation file (no headers). Use this for internal classes within a class.
+
+<br><dt><kbd>interface</kbd><dd>Interface declaration. 
+
+<br><dt><kbd>mixin</kbd><dd>Mixin declaration and implementation files.
+
+<br><dt><kbd>test</kbd><dd>Unit testing base class template.
+</dl>
+   
+
+   </body></html>
+

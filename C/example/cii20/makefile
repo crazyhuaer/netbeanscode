@@ -41,7 +41,7 @@ OBJS=	$Bap$O \
 	$Bxp$O \
 	$(THREADS)
 
-EXAMPLES=	$Bdouble$E \
+#EXAMPLES=	$Bdouble$E \
 		$Bcalc$E \
 		$Bids$E \
 		$Bmpcalc$E \

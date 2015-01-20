@@ -1,0 +1,306 @@
+<html lang="en">
+<head>
+<title>Unit testing support - Object Oriented C (ooc) toolkit 1.3a</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Object Oriented C (ooc) toolkit 1.3a">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Memory-handling.html#Memory-handling" title="Memory handling">
+<link rel="next" href="Class-manipulation-tool.html#Class-manipulation-tool" title="Class manipulation tool">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This manual is for Object Oriented C (ooc) toolkit (version 1.3a, 8 January 2012),
+which is a lightweight collection of tools for Object Oriented programming approach in ANSI-C.
+
+Copyright (C)Tibor Miseta 2008-2011 Free Software Foundation, Inc.
+
+
+     Permission is granted to copy, distribute and/or modify this
+     document   under the terms of the GNU Free Documentation
+     License, Version 1.2   or any later version published by the
+     Free Software Foundation;   with no Invariant Sections, no
+     Front-Cover Texts, and no Back-Cover   Texts.  A copy of the
+     license is included in the section entitled ``GNU   Free
+     Documentation License''.  (a) The FSF's Back-Cover Text is:
+     ``You have the freedom to copy and modify this GNU manual.
+     Buying copies from the FSF supports it in developing GNU and
+     promoting software freedom.''
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Unit-testing-support"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Class-manipulation-tool.html#Class-manipulation-tool">Class manipulation tool</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Memory-handling.html#Memory-handling">Memory handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">8 Unit testing support</h2>
+
+<p>
+It is very important testing your classes before you integrate them into a larger part of code. The Unit testing support in <strong>ooc</strong> is inspired by the Unit 3 testing framework used mainly in Java. If you are not familiar with the topic I recommend some reading about the "test-driven development" approach to catch the basis and importance of unit testing.
+
+
+<h3 class="section">8.1 How to create a unit test?</h3>
+
+<p>Unit test classes are subclasses of <code>TestCase</code> class, these are called test cases. A test case in <strong>ooc</strong> is represented by an executable that can be invoked from the operating system or can be run in a simulator in case of microcontrollers.<br>
+The test cases have several test methods, that do different tests. These test methods are executed in the order as they are defined in the test method order table.<br>
+The test cases could be organized into test suites. The latter means a batch file in <strong>ooc</strong> that executes the test cases in a sequence.<br>
+Its recommended collecting your testable classes in a static directory (*.o in Linux, *.lib in Windows, etc.) to make things simplier. Although this is not necessary, this makes the linking of your testcase more simply, and enables you creating fake classes as needed.
+   <pre class="sp">
+
+</pre>
+Creating a unit test is easy!
+     <ol type=1 start=1>
+<li>Make a directory in wich you would like to collect your test cases. This directory will be your test suite directory, since it will hold your test case, your makefiles and test siute batch files. Select this directory as your working folder. (For very small projects this practice may not be necessary, you may use the source directory too for your tests.)
+<li>Create your test environment with the following command:<br>
+     <pre class="example">          ~$ ooc --testsuite
+</pre>
+     <p>This creates the necessary makefiles and test suite batch files into this directory. Edit those files according to the comments in them as necessary. If you are working with an IDE, you can configure it to use these makefiles for convenience. It can be used with the automake tools as well under Linux.
+<li>Create your test case with the following command:<br>
+     <pre class="example">          ~$ ooc --new MyClassTest --template test
+</pre>
+     <p>As a naming convention I recommend using "Test" as a tail for your test classes. This helps identify them, but also lets you use the automatic makefile rules in Linux! In Windows you must add this file to the Makefile: edit it according to the comments in it.
+<li>Implement the <code>before_class(), before(), after(), after_class()</code> methods in your test file if they are necessary for your test methods. The skeletons can be found in the created file already.
+<li>Implement your test methods. Add them to the test method order table. For details see the next sections.
+<li>Build your test case with the supplied Makefile.
+<li>Run your test case as an executable.
+<li>Run your testsuite. Edit your test suite file (suite.sh or suite.bat) as required by the help of the comments in it, and start that script/batch file.
+        </ol>
+
+
+<h3 class="section">8.2 Writing a unit test</h3>
+
+<h4 class="subsection">8.2.1 Writing test methods</h4>
+
+<p>Implement your test method as a function of the following prototype:<br>
+<pre class="example">     static void myclasstest_method1( MyTest self );
+</pre>
+   <p>You can expect that the <code>before()</code> method has been completed succefully before invoking your test method, and the <code>after()</code> method will be invoked after completing your test method.<br>
+The test method can throw an <code>Exception</code> or a subclass of it. If the exception is uncaught within the method, the test case repots the test as failed. If the <code>Exception</code> is not caught within your test method, the <code>after()</code> method will not be invoked!
+   <pre class="sp">
+
+</pre>
+You must put your test method into the test method order table, to let your test case know what methods to invoke! You can do this using the <code>TEST</code> macro:<br>
+<pre class="example">     static ROM_ALLOC struct TestCaseMethod methods[] =
+     {
+         TEST(myclasstest_method1),
+     	
+         {NULL, NULL} /* Do NOT delete this line! */
+     };
+</pre>
+   <p>
+
+   <pre class="sp">
+
+</pre>
+<strong>Important!</strong> In ooc your test methods are not independent! This means that if one of your test methods makes changes into any global or test case member variables, or into the environment, the succeeding test methods will inherit those changes. This is a very important difference from Unit 3, where it is garanteed that all test methods starts in a fresh environment.
+
+
+<h4 class="subsection">8.2.2 Assertions</h4>
+
+<p>This is why we do the whole staff! :-) Within our test methods we would like to make assertions on the status of our testable classes. For this purpose we can use a group of <code>assertCondition</code> macros. (Don't be confused: these macros do nothing with those ones in the &lt;assert.h&gt; headers!) The <code>assertCondition</code> macros check the given condition, and if the assertion is not met, print an error message identifying the line of code. The execution of code continues in both cases.<br>
+A group of <code>assertCondition</code> macros can print messages defined by the user as well. These macros look like <code>assertConditionMsg</code>.<br>
+An example for using the  <code>assertCondition</code> macros from the <code>ListTest</code> unit test case, testing the list iterator:
+<pre class="example">     static
+     void
+     iterator( ListTest self )
+     {
+         list_append( self-&gt;foolist, foo_new() );
+     	
+         assertTrue( self-&gt;foolist-&gt;first == list_first( self-&gt;foolist ) );
+         assertTrue( self-&gt;foolist-&gt;last == list_last( self-&gt;foolist ) );
+         assertTrue( list_first( self-&gt;foolist ) == list_last( self-&gt;foolist ) );
+     	
+         list_append( self-&gt;foolist, foo_new() );
+     	
+         assertTrue( self-&gt;foolist-&gt;first == list_first( self-&gt;foolist ) );
+         assertTrue( self-&gt;foolist-&gt;last == list_last( self-&gt;foolist ) );
+         assertFalse( list_first( self-&gt;foolist ) == list_last( self-&gt;foolist ) );
+         assertTrue( list_last( self-&gt;foolist ) == list_next( self-&gt;foolist, list_first( self-&gt;foolist ) ) );
+         assertTrue( list_first( self-&gt;foolist ) == list_previous( self-&gt;foolist, list_last( self-&gt;foolist ) ) );
+     }
+</pre>
+   <p>For the complete list of <code>assertCondition</code> macros see the <strong>ooc</strong> API documentation, or the <code>testcase.h</code> header file.
+   <pre class="sp">
+
+</pre>
+There is a macro that reports a failure unconditionally, this is the <code>fail</code> (or the <code>failMsg</code>) macro. It prints the error message unconditionally, and continues. It can be used if the condition to be tested is not a simple assertion, and the code runs on a bad path.
+
+<h4 class="subsection">8.2.3 Messages</h4>
+
+<p>Normally the test cases do not print any message on the screen: they inform you about the actual method by printing its name, but this info will be deleted if the method was executed succesfully. On a Linux or Windows system there won't be any messages left on the display in case of expected results!<br>
+<pre class="example">     ~$ ./listtest
+     ~$
+</pre>
+   <p>If some assertions fails, you will see a message similar to this one:
+<pre class="example">     ~$ ./listtest
+     [4] ListTest::iterator()          
+             Failed:  [listtest.c : 325]
+     Test case ListTest failed: 30/1 (methods run/failed)
+     ~$
+</pre>
+   <p>This could be an example, if our <code>ListTest::iterator()</code> method detected an error in the list iterator implementation. Let's see the meaning of the message!<br>
+     <ol type=1 start=1>
+<li>The number in angle brackets shows the sequence number of the method: the failed method was the fourth executed method in the test case.
+<li><code>ListTest::iterator()</code> informs about the name of the method. The part before the period shows the name of the class, the part after the period identifies the name of the failed test method.
+<li>The next line says that an assertion in this method failed. If we used an <code>assertConditionMsg</code> assertion, the message would be displayed here.
+<li>In the angle brackets the exact location of the failed assertion is displayed: the name of the source code and the line number in the source code. This information helps you find the failed one fast and easily.
+<li>The last line is a summary for the test case. It shows how many test methods was run in the test case, and how many of them was failed.
+        </ol>
+
+In some cases your test method may throw an exception that is not caught by your method. These exceptions are caught by the TestCase class, displayed as follows, and the code execution continues with the next test method.
+
+<pre class="example">     ~$ ./listtest
+     [4] ListTest::iterator()          
+             Unexpected exception: Exception, code: 1, user code: 0
+     ~$
+</pre>
+   <p>The caught exception was an <code>Exception</code> class with code 1. Since this is a core ooc exception, evaluating the <code>"exception.h"</code> header it can be seen, this is <code>err_out_of_memory</code>, probably our test method run out of memory.
+
+
+<h4 class="subsection">8.2.4 Overriding virtuals</h4>
+
+<p>Use the <code>before_class(), before(), after(), after_class()</code> methods to prepare your test case for test methods. Similar to Unit 3: <code>before_class()</code> and <code>after_class()</code> will run only once: when instantiating your test case class, that is a subclass of <code>TestCase</code>.<br>
+The <code>before()</code> and <code>after()</code> methods will run for each test method execution. Generally in <code>before()</code> you can prepare the necessary classes for your test methods, while in <code>after()</code> you should destroy them.<br>
+You can use <code>assertConditionMsg</code> assertions freely in these virtuals. It might be usefull especially in the <code>after()</code> method to check that the test method did not corrupt the integrity of your test class.<br>
+You can throw ecxeptions in <code>before()</code> and <code>before_class()</code> methods, but never throw in <code>after()</code>!<br>
+For complicated test cases you can override these methods, since those are virtual methods (but do not do this, if you do not understand exactly how and when they are called. Check the source code if you have any doubt!)<br>
+The exexcution order of the virtual methods is:
+<pre class="verbatim">For each instantiation of your test case:
+{
+	Your testcase's parents' constructors
+	Your testcase's constructor
+	For each testcase_run( TestCase ):
+	{
+		Your test's parents' before_class() methods
+		Your test's before_class() method
+		For each test method in the test method table:
+		{
+			Your test's parents' before() methods
+			Your test's  before() method
+			Yor test method
+			Your test's  after() method
+			Your test's parents' after() methods
+		}
+		Your test's after_class() method
+		Your test's parents' after_class() methods
+	}
+	Your testcase's destructor
+	Your testcase's parents' destructors
+}
+</pre>
+
+
+<h4 class="subsection">8.2.5 Testing exceptions</h4>
+
+<p>Test the expected exceptions as follows! Let's check the index overrun behavior of the Vector class:
+<pre class="example">     try {
+         vector_get_item( self-&gt;vector, -1 );   /* Should throw an Exception! */
+         fail();                                /* Should never be executed! */
+     }
+     catch_any
+         assertTrue( exception_get_error_code( exception ) == err_wrong_position );
+     end_try;
+</pre>
+   <h4 class="subsection">8.2.6 Memory leak test</h4>
+
+<p>Tests for possible memory leaks is an essential issue in C! Always run your test cases to discover memory leaks, because this helps you make your code robust and reliable!<br>
+In <strong>ooc</strong> the recommended way is using <strong>Valgrind</strong> (<a href="http://valgrind.org">http://valgrind.org</a>), a memory checker (and much more!) tool available under Linux. (For Windows I do not know such a tool, please infrom me if there is a similar possibility.)<br>
+To perform a memory check, run your testcase in <strong>Valgrind</strong>:
+<pre class="example">     ~$ valgrind --leak-check=yes --quiet ./myclasstest
+</pre>
+   <p>To minimize your headache, I recommend running only error free test cases under Valgrind! :-) Hunting for assertion failures together with memory problems could be a nightmare!
+   <pre class="sp">
+
+</pre>
+<strong>Note I.:</strong> In the Linux standard C library there may be some optimizations that are reported by <strong>Valgrind</strong> as a possible memory leak, but in fact they are not an error, especially not yours. If you face with this problem, you can suppress them. To supress them, create an empty test case, run it in <strong>Valgrind</strong> and create a suppress file. For details see the <strong>Valgrind</strong> documentation: "2.5. Suppressing errors" (<a href="http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress">http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress</a>).
+   <pre class="sp">
+
+</pre>
+<strong>Note II.:</strong> <strong>ooc</strong> converts the Unix signals (SIGSEGV, SIGFPE) into ooc exceptions. This let us handle and display those problems the same way as other exceptions in ooc. Unfortunately <strong>Valgrind</strong> overrides these signal handlers, and as a consequence, your test case can not be run under <strong>Valgrind</strong> if you force emmitting these Unix signals (e.g. intentionally dereferencing a NULL pointer and checking for <code>SegmentationFault</code> exception.)
+
+
+<h4 class="subsection">8.2.7 Unit testing techniques:</h4>
+
+<p>There are several best practices in Unit testing. Some of them could be used in <strong>ooc</strong> as well.
+
+<h5 class="subsubsection">8.2.7.1 Inherited test cases</h5>
+
+<p>If you must write many test cases that requires identical preparation or a special environment, then you may consider creating a test case to make this preparation and which could be the parent for your test cases.<br>
+<strong>ooc</strong> <code>TestCase</code> can be inherited!
+<a name="Using-fake-objects"></a>
+
+<h5 class="subsubsection">8.2.7.2 Using fake objects</h5>
+
+<p>In this technique you can mimic the behaviour of an object that is not available during the execution of your test case: you simply replace a class with a fake class that behaves identical (or at least as expected), but does not do its job.<br>
+Write your fake class in your test suite directory: all the method names must be identical to the original ones! Link your test case as usual, except that you define your fake object file earlier in the parameter line than the library containing your testable classes. The linker will use the symbols in the order they appear in the parameter list: replacing you class with the fake.
+   <pre class="sp">
+
+</pre>
+In Linux and Windows this is very simple! Just create your fake class with the <kbd>ooc</kbd> tool in the suite directory (you may copy it from your source directory). Do not copy the header file, since it should be the original one! As a naming convention the source file name must NOT end with <code>Test</code>, tail it with <code>Fake</code> instead.<br>
+Modifiy your code in the fake class. The rest is done by the supplied Makefiles! (In Windows, you must add your file to the Makefile first!)
+
+<h5 class="subsubsection">8.2.7.3 Using mock objects</h5>
+
+<p>I have no clue in this moment, how to elaborate this technique in C. :-(
+
+<h4 class="subsection">8.2.8 Dependency lookup</h4>
+
+<p>For effective unit testing you need a design in wich your classes do not rely on their dependencies. Establishing your classes uncoupled helps you reuse them much easier and lets you implement unit testing. (For more infromation on this topic I recommend some googling on dependency injection, dependency lookup and such topics in Java.)
+Theoretically it is possible writing a cotainer class in <strong>ooc</strong> that could handle the object/class dependencies based on an external descriptor file (e.g. XML), like in some Java implementations. Although it would be possible, it will not be feasible: small microcontollers do not have the power to execute effectively.
+So I recommend using the "dependency lookup" idiom in <strong>ooc</strong> with a very simple implementation:
+     <ol type=1 start=1>
+<li>In your class's implementation source file define an external function prototype, like this:<br>
+     <pre class="example">          extern void injectMyClass( MyClass self );
+</pre>
+     <p>This is your injector method for your class.
+<li>In your class's constructor call your injector. It is the injector's responsibility to fill the members with the dependencies of your class. Do not set those members in your constructor. It is a good idea to put some check in your code that validates the injected dependencies, at least in the debug version.
+     <pre class="example">          Static
+          Void
+          MyClass_constructor( MyClass self, void * param )
+          {
+             chain_constructor( MyClass, self, NULL );
+             injectMyClass( self );
+             assert( ooc_isInstanceOf( self-&gt;settings, Settings ) );
+          }
+</pre>
+     <li>Create your injector method in a separate file, let's call it <code>injector.c</code>.
+     <pre class="example">          #include "myclass.h"
+          #include "implement/myclass.h"
+          #include "settings.h"
+          
+          void injectMyClass( MyClass self )
+          {
+             self-&gt;settings = settings_new();
+          }
+</pre>
+     <p>You can inject singleton objects too, if you create them before any call to injectors, or you can use reference counted objects for your dependencies alternatively.<br>
+Implement your other injectors in this file too.
+<li>Compile and link together your object files.
+<li>Copy your injector file into your unit testing directory, and rewrite it as it is required by your unit tests. Compile and link your test: pay atention to link your test injector, instead of the original one! (The supplied Makefiles will take care.)<br>
+See <a href="Using-fake-objects.html#Using-fake-objects">Using fake objects</a>.
+
+        </ol>
+
+Altough in Java there is only a idiom called "inject while constructing", in <strong>ooc</strong> it makes sense "inject while initializing". Implement injectors for your initialization methods separately, when it makes sense. (e.g. Injecting virtual functions, like mixins into the virtual table.)<br>
+<strong>Important!</strong> Take care of your design in your classes, that if there is a circular dependency (typically a reference-back) between your classes, this approach will result in an endless loop! Break up the circular dependency, and pass the back reference as a constructor parameter!
+
+
+
+   </body></html>
+
