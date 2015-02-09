@@ -14,15 +14,16 @@ extern "C" {
 
 #include <signal.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "base.h"
 #include "main.h" 
-
-
+            
     int InitSystem();
     void InitSystemPrint();
     void InitConfigSystem();
     void InitSystemVar();
     int InitLogSystem();
+    extern pthread_t CreateThread(void *ThreadFunction);
     
     void DestorySystem();
     void SetupSignal();

@@ -15,4 +15,6 @@
 /Website/HTML5Application/nbproject/private/
 /C/study/smarthome/build/
 /C/study/smarthome/dist/
-/*.o
+*.o
+/C/study/testooc/build/
+/C/study/testooc/dist/

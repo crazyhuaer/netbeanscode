@@ -16,6 +16,8 @@ extern "C" {
 #include <stdlib.h>
 #include <sys/socket.h>
 
+//#define NDEBUG
+#include <assert.h>
     
 #include "log.h"
 #include "lib_network.h"
@@ -30,6 +32,7 @@ extern "C" {
 #include "cii/array.h"
 #include "cii/ring.h"
 #include "cii/arrayrep.h"
+#include "cii/except.h"
  
     #define true 1
     #define false 0
@@ -52,6 +55,8 @@ extern "C" {
         } server;
     };
     
+    void *TestThread(void *p);
+    void *TestThread2(void *p);
 
 #ifdef	__cplusplus
 }

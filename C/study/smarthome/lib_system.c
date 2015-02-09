@@ -1,7 +1,5 @@
 
-
 #include <unistd.h>
-
 #include "lib_system.h"
 
 // Init the system,such as log signal
@@ -154,6 +152,28 @@ void SetupSignal() {
 //    }
 }
 
+/** 
+ 创建线程
+ */
+
+pthread_t CreateThread(void *ThreadFunction) {
+    pthread_t tid;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    
+    if (pthread_create(&tid, &attr,ThreadFunction, NULL) != 0) {
+            printf("创建主接收事件监听线程失败");
+        return 0;
+    
+    }
+    else
+        return tid;
+}
+
+/**
+ * 
+ */
 void DestorySystem(){
     if (log_path) {
         freeData(log_path);

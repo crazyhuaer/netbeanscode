@@ -73,6 +73,9 @@
         <asmTool>
           <commandLine>-Dalpha</commandLine>
         </asmTool>
+        <linkerTool>
+          <commandLine>-pthread</commandLine>
+        </linkerTool>
       </compileType>
       <item path="base.c" ex="false" tool="0" flavor2="0">
       </item>

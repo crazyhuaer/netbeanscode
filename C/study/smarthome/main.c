@@ -66,32 +66,32 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////////////////////////////
     Table_T table = Table_new(0,NULL,NULL);
     
-    int fd = 15;
-     
-    int counts = 23;
-    
-    Table_put(table,&fd,&counts);
-    
-    int *values = (int *)Table_get(table,&fd);
-    if (values) {
-        printf("key:%d,value:%d\n",fd,*values);
-        int count = 30;
-        Table_put(table,&fd,&count);
-        
-        values = (int *)Table_get(table,&fd);
-        if (values) {
-            printf("key:%d,value:%d\n",fd,*values);
-        }
-        
-        
-    } else {
-        printf("can't get value by key:%d\n",fd);
-    }
-
-    int table_length = Table_length(table);
-    printf("table length:%d\n",table_length);
-    
-    Table_map(table,vfree,NULL);
+//    int fd = 15;
+//     
+//    int counts = 23;
+//    
+//    Table_put(table,&fd,&counts);
+//    
+//    int *values = (int *)Table_get(table,&fd);
+//    if (values) {
+//        printf("key:%d,value:%d\n",fd,*values);
+//        int count = 30;
+//        Table_put(table,&fd,&count);
+//        
+//        values = (int *)Table_get(table,&fd);
+//        if (values) {
+//            printf("key:%d,value:%d\n",fd,*values);
+//        }
+//        
+//        
+//    } else {
+//        printf("can't get value by key:%d\n",fd);
+//    }
+//
+//    int table_length = Table_length(table);
+//    printf("table length:%d\n",table_length);
+//    
+//    Table_map(table,vfree,NULL);
     Table_free(&table);
     //////////////////////////////////////////////////////////////////////////////
 //    Array_T array;
@@ -130,11 +130,15 @@ int main(int argc, char** argv) {
     
     Ring_free(&ring3);
     //////////////////////////////////////////////////////////////////////////////
-    
-    
+    //assert(ring3);
+//    TRY 
+//    a[2] = 5;
+//    EXCEPT(e)
+//            
+//    END_TRY;
     
     //////////////////////////////////////////////////////////////////////////////
-    return 0; 
+    //return 0; 
     // end
     //////////////////////////////////////////////////////////////////////////////
     // init var
@@ -164,7 +168,8 @@ int main(int argc, char** argv) {
 //        INFO("%s%s%d", "can\t connect the server","192.168.2.249:",connect_prot);
 //        return -1;
 //    }
-    
+    CreateThread(TestThread);
+    CreateThread(TestThread2);
     while(1){
 //        char *datas = "hello world\n";
 //        int size = send(cfd,datas,sizeof(datas),0);
@@ -179,6 +184,15 @@ void vfree(const void* key,void **count,void *c1){
     FREE(count);
 }
 
+void *TestThread(void *p) {
+    printf("test thread\n");
+    DEBUG("test thread\n");
+}
+
+void *TestThread2(void *p) {
+    printf("test thread2\n");
+    DEBUG("test thread2\n");
+}
 void test(Ring_T data){
     Ring_add(data,0,"I ");
     Ring_add(data,0,"Love ");
