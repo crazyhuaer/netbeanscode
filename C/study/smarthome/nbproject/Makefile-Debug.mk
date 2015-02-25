@@ -47,7 +47,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/lib_network.o \
 	${OBJECTDIR}/lib_system.o \
 	${OBJECTDIR}/log.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/threadpool.o
 
 
 # C Compiler Flags
@@ -138,6 +139,11 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/threadpool.o: threadpool.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/threadpool.o threadpool.c
 
 # Subprojects
 .build-subprojects:

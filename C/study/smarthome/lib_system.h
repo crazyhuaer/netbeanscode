@@ -16,7 +16,7 @@ extern "C" {
 #include <stdlib.h>
 #include <pthread.h>
 #include "base.h"
-#include "main.h" 
+#include "main.h"
             
     int InitSystem();
     void InitSystemPrint();

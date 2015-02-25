@@ -21,6 +21,14 @@ void InitSystemVar(){
     //log_path = newMultiString("%s%s",systemTime,".log");
     // log_path from config file
     
+    pthread_mutex_init(&lock, NULL);
+    
+    if((threadpool = threadpool_create(THREADNUMBER, QUEUENUMBER, 0)) == NULL){
+        printf("Create thread pool error!\n");
+        DEBUG("Create thread pool error!\n");
+        return;
+    }
+
     char buf[1024];
     int count;
     memset(buf,0,1024);
@@ -196,5 +204,12 @@ void DestorySystem(){
         
         freeData(config);
     }
+  
+    if(threadpool){
+        threadpool_destroy(threadpool, 0);
+    }
+
+    pthread_mutex_destroy(&lock);
+    
     exit(0);
 }

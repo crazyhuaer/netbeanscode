@@ -28,6 +28,7 @@
       <itemPath>lib_system.h</itemPath>
       <itemPath>log.h</itemPath>
       <itemPath>main.h</itemPath>
+      <itemPath>threadpool.h</itemPath>
       <itemPath>uthash.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -42,6 +43,7 @@
       <itemPath>lib_system.c</itemPath>
       <itemPath>log.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>threadpool.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -131,6 +133,10 @@
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="threadpool.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="threadpool.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="uthash.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
@@ -207,6 +213,10 @@
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="threadpool.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="threadpool.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="uthash.h" ex="false" tool="3" flavor2="0">
       </item>

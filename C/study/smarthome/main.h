@@ -33,16 +33,24 @@ extern "C" {
 #include "cii/ring.h"
 #include "cii/arrayrep.h"
 #include "cii/except.h"
- 
+#include "threadpool.h"
+    
     #define true 1
     #define false 0
+    
+    #define THREADNUMBER 32
+    #define QUEUENUMBER  256
+    
     
     char *systemTime;
     
     char *log_path;
     char *confPath;
     struct config_t *config;
-
+    
+    threadpool_t *threadpool;
+    pthread_mutex_t lock;
+    
     struct config_t {
         struct {
             char *basename;
@@ -55,8 +63,8 @@ extern "C" {
         } server;
     };
     
-    void *TestThread(void *p);
-    void *TestThread2(void *p);
+    void TestThread(void *p);
+    void TestThread2(void *p);
 
 #ifdef	__cplusplus
 }

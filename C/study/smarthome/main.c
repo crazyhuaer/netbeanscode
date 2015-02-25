@@ -5,6 +5,8 @@
  * Created on December 28, 2014, 11:17 PM
  */
 
+#include <unistd.h>
+
 #include "main.h"
 
 /*
@@ -168,13 +170,24 @@ int main(int argc, char** argv) {
 //        INFO("%s%s%d", "can\t connect the server","192.168.2.249:",connect_prot);
 //        return -1;
 //    }
-    CreateThread(TestThread);
-    CreateThread(TestThread2);
-    while(1){
-//        char *datas = "hello world\n";
-//        int size = send(cfd,datas,sizeof(datas),0);
-        usleep(100000);
+//    CreateThread(TestThread);
+//    CreateThread(TestThread2);
+    
+    for(i = 0; i < 8192; i++) {
+        if (i%2 == 1) {
+            threadpool_add(threadpool, TestThread, &i, 0);
+        } else {
+            threadpool_add(threadpool, TestThread2, NULL, 0);
+        }
     }
+    
+//    while(1){
+////        char *datas = "hello world\n";
+////        int size = send(cfd,datas,sizeof(datas),0);
+//        usleep(100000);
+//    }
+    
+    sleep(1);
     
     DestorySystem();
     return (EXIT_SUCCESS);
@@ -184,14 +197,15 @@ void vfree(const void* key,void **count,void *c1){
     FREE(count);
 }
 
-void *TestThread(void *p) {
-    printf("test thread\n");
-    DEBUG("test thread\n");
+void TestThread(void *p) {
+    int *pData = (int*)p;
+    printf("test thread:%d\n",*pData);
+    //DEBUG("test thread\n");
 }
 
-void *TestThread2(void *p) {
+void TestThread2(void *p) {
     printf("test thread2\n");
-    DEBUG("test thread2\n");
+    //DEBUG("test thread2\n");
 }
 void test(Ring_T data){
     Ring_add(data,0,"I ");
