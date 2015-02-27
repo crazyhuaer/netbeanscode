@@ -34,6 +34,9 @@ extern "C" {
 #include "cii/arrayrep.h"
 #include "cii/except.h"
 #include "threadpool.h"
+#include "include/event2/util.h"
+#include "include/event2/event.h"
+#include "include/event2/bufferevent.h"
     
     #define true 1
     #define false 0
@@ -65,6 +68,11 @@ extern "C" {
     
     void TestThread(void *p);
     void TestThread2(void *p);
+    
+    void do_accept(evutil_socket_t listener,short event,void *arg);
+    void read_cb(struct bufferevent *bev,void *arg);
+    void write_cb(struct bufferevent *bev,void *arg);
+    void error_cb(struct bufferevent *bev,short event,void *arg);
 
 #ifdef	__cplusplus
 }

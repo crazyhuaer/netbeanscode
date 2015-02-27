@@ -6,7 +6,7 @@
  */
 
 #include <unistd.h>
-
+#include <sys/socket.h>
 #include "main.h"
 
 /*
@@ -172,14 +172,57 @@ int main(int argc, char** argv) {
 //    }
 //    CreateThread(TestThread);
 //    CreateThread(TestThread2);
+    //////////////////////////////////////////////////////////////////////////////
+//    // test thread.
+//    for(i = 0; i < 8192; i++) {
+//        if (i%2 == 1) {
+//            threadpool_add(threadpool, TestThread, &i, 0);
+//        } else {
+//            threadpool_add(threadpool, TestThread2, NULL, 0);
+//        }
+//    }
+//    
+//    sleep(1);
+    //////////////////////////////////////////////////////////////////////////////
+    // test libevent.
+    int listen_port = 9999;
+    int listen_backlog = 32;
     
-    for(i = 0; i < 8192; i++) {
-        if (i%2 == 1) {
-            threadpool_add(threadpool, TestThread, &i, 0);
-        } else {
-            threadpool_add(threadpool, TestThread2, NULL, 0);
-        }
+    evutil_socket_t listener;
+    listener = socket(AF_INET,SOCK_STREAM,0);
+    assert(listener > 0);
+    evutil_make_listen_socket_reuseable(listener);
+
+    struct sockaddr_in sin;
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = 0;
+    sin.sin_port = htons(listen_port);
+
+    if (bind(listener, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
+        perror("bind");
+        return 1;
     }
+
+    if (listen(listener, listen_backlog) < 0) {
+        perror("listen");
+        return 1;
+    }
+
+    printf("Listening...\n");
+
+    evutil_make_socket_nonblocking(listener);
+
+    struct event_base *base = event_base_new();
+    assert(base != NULL);
+    struct event *listen_event;
+    listen_event = event_new(base, listener, EV_READ | EV_PERSIST, do_accept, (void*) base);
+    event_add(listen_event, NULL);
+    event_base_dispatch(base);
+
+    printf("The End.");
+    return 0;
+    
+    //////////////////////////////////////////////////////////////////////////////
     
 //    while(1){
 ////        char *datas = "hello world\n";
@@ -187,7 +230,7 @@ int main(int argc, char** argv) {
 //        usleep(100000);
 //    }
     
-    sleep(1);
+    
     
     DestorySystem();
     return (EXIT_SUCCESS);
@@ -199,16 +242,76 @@ void vfree(const void* key,void **count,void *c1){
 
 void TestThread(void *p) {
     int *pData = (int*)p;
-    printf("test thread:%d\n",*pData);
+    //printf("test thread:%d\n",*pData);
     //DEBUG("test thread\n");
 }
 
 void TestThread2(void *p) {
-    printf("test thread2\n");
+    //printf("test thread2\n");
     //DEBUG("test thread2\n");
 }
 void test(Ring_T data){
     Ring_add(data,0,"I ");
     Ring_add(data,0,"Love ");
     Ring_addhi(data,"U! ");
+}
+
+void do_accept(evutil_socket_t listener, short event, void *arg){
+    struct event_base *base = (struct event_base *)arg;
+    evutil_socket_t fd;
+    struct sockaddr_in sin;
+    socklen_t slen = sizeof(sin);
+    fd = accept(listener, (struct sockaddr *)&sin, &slen);
+    if (fd < 0) {
+        perror("accept");
+        return;
+    }
+    if (fd > FD_SETSIZE) { //这个if是参考了那个ROT13的例子，貌似是官方的疏漏，从select-based例子里抄过来忘了改
+        perror("fd > FD_SETSIZE\n");
+        return;
+    }
+
+    printf("ACCEPT: fd = %u\n", fd);
+
+    struct bufferevent *bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    bufferevent_setcb(bev, read_cb, NULL, error_cb, arg);
+    bufferevent_enable(bev, EV_READ|EV_WRITE|EV_PERSIST);
+}
+
+void read_cb(struct bufferevent *bev, void *arg){
+#define MAX_LINE    256
+    char line[MAX_LINE+1];
+    int n;
+    evutil_socket_t fd = bufferevent_getfd(bev);
+
+    while (n = bufferevent_read(bev, line, MAX_LINE), n > 0) {
+        line[n] = '\0';
+        printf("fd=%u, read line: %s\n", fd, line);
+
+        bufferevent_write(bev, line, n);
+    }
+}
+
+void write_cb(struct bufferevent *bev, void *arg) {
+#define MAX_LINE    256
+    char line[MAX_LINE+1];
+    int n;
+    evutil_socket_t fd = bufferevent_getfd(bev);
+    
+    
+}
+
+void error_cb(struct bufferevent *bev, short event, void *arg){
+    evutil_socket_t fd = bufferevent_getfd(bev);
+    printf("fd = %u, ", fd);
+    if (event & BEV_EVENT_TIMEOUT) {
+        printf("Timed out\n"); //if bufferevent_set_timeouts() called
+    }
+    else if (event & BEV_EVENT_EOF) {
+        printf("connection closed\n");
+    }
+    else if (event & BEV_EVENT_ERROR) {
+        printf("some other error\n");
+    }
+    bufferevent_free(bev);
 }

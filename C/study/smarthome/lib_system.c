@@ -123,7 +123,7 @@ void sig_handler(int signo) {
 //}
 
 // process the system signals
-void SetupSignal() {
+void SetupSignal() {   
     if (signal(SIGINT, sig_handler) == SIG_ERR)
         printf("\ncan't catch SIGINT\n");
     if (signal(SIGPIPE, sig_handler) == SIG_ERR)
@@ -135,6 +135,13 @@ void SetupSignal() {
 
     struct sigaction new_action;
     struct sigaction oldaction;
+//    
+    sigemptyset(&new_action.sa_mask);
+    sigaddset(&new_action.sa_mask, SIGINT);
+    sigaddset(&new_action.sa_mask, SIGPIPE);
+    sigaddset(&new_action.sa_mask, SIGTERM);
+    sigaddset(&new_action.sa_mask, SIGTSTP);
+    
     new_action.sa_handler = sig_handler;
 
     new_action.sa_flags = 0;
@@ -197,7 +204,11 @@ void DestorySystem(){
     
     CloseLogFile();
     
-    if (config){
+    if (config){   
+        if(config->system.basename){
+            freeData(config->system.basename);
+        }
+        
         if(config->server.serverip){
             freeData(config->server.serverip);
         }
