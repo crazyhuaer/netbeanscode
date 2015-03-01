@@ -125,7 +125,6 @@
           <linkerAddLib>
             <pElem>lib</pElem>
           </linkerAddLib>
-          <stripSymbols>true</stripSymbols>
           <commandLine>-pthread -levent</commandLine>
         </linkerTool>
       </compileType>

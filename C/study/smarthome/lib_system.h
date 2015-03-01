@@ -22,7 +22,9 @@ extern "C" {
     void InitSystemPrint();
     void InitConfigSystem();
     void InitSystemVar();
-    int InitLogSystem();
+    void  InitSystemThread(int threadnumber,int queuenumber);
+    void  InitSystemNetwork();
+    void InitLogSystem();
     extern pthread_t CreateThread(void *ThreadFunction);
     
     void DestorySystem();

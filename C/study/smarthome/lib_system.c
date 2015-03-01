@@ -2,11 +2,15 @@
 #include <unistd.h>
 #include "lib_system.h"
 
-// Init the system,such as log signal
-int InitSystem(){
+// Init the system,such as log signal network thread etc...
+int InitSystem(){  
     InitSystemPrint();
     InitSystemVar();
     InitConfigSystem();
+    
+    InitSystemThread(THREADNUMBER, QUEUENUMBER);  
+    InitSystemNetwork();
+    
     InitLogSystem();
     SetupSignal();
 }
@@ -21,14 +25,6 @@ void InitSystemVar(){
     //log_path = newMultiString("%s%s",systemTime,".log");
     // log_path from config file
     
-    pthread_mutex_init(&lock, NULL);
-    
-    if((threadpool = threadpool_create(THREADNUMBER, QUEUENUMBER, 0)) == NULL){
-        printf("Create thread pool error!\n");
-        DEBUG("Create thread pool error!\n");
-        return;
-    }
-
     char buf[1024];
     int count;
     memset(buf,0,1024);
@@ -50,19 +46,44 @@ void InitSystemVar(){
     memset(config,0,sizeof(struct config_t));
     
     config->system.basename = newString(buf);
+    
+    config->server.base = event_base_new();
 }
 
 void InitConfigSystem(){ 
     config->server.serverip = ReadConfigfile(confPath,"serverip");
     config->server.serverport = GetConfInt(confPath,"serverport");
+    config->server.webport = GetConfInt(confPath,"webport");
 
     printf("\tL__________System params:\n");
-    printf("\tL__________Web IP:%s\n",config->server.serverip);
-    printf("\tL__________Web Port:%d\n",config->server.serverport);
+    printf("\tL__________Server IP:%s\n",config->server.serverip);
+    printf("\tL__________Server Port:%d\n",config->server.serverport);
+    printf("\tL__________Web Port:%d\n",config->server.webport);
+}
+
+void InitSystemThread(int threadnumber,int queuenumber){
+    pthread_mutex_init(&(config->server.lock), NULL);
+
+    if ((config->server.threadpool = threadpool_create(threadnumber, queuenumber, 0)) == NULL) {
+        printf("Create thread pool error!\n");
+        DEBUG("Create thread pool error!\n");
+        exit(-1);
+    }
+}
+
+void InitSystemNetwork(){
+    int listen_backlog = 32;
+
+    int ret = create_libevent_listen(config->server.serverport,listen_backlog,do_accept);
+    if(ret <= 0){
+        printf("System Can't Running with Network.\n");
+        DEBUG("System Can't Running with Network.\n");
+        exit(-1);
+    }
 }
 
 // open the log file
-int InitLogSystem(){  
+void InitLogSystem(){  
     if (DEBUG_LOG_ENABLED || ERROR_LOG_ENABLED) {
         OpenLogFile(log_path);
     }
@@ -152,7 +173,6 @@ void SetupSignal() {
         sigaction(SIGHUP,&new_action,NULL);
     }
 
-    
 //    struct sigaction sa;
 //    //在linux下写socket的程序的时候，如果尝试send到一个disconnected socket上，就会让底层抛出一个SIGPIPE信号。
 //    //这个信号的缺省处理方法是退出进程
@@ -212,15 +232,15 @@ void DestorySystem(){
         if(config->server.serverip){
             freeData(config->server.serverip);
         }
-        
+
+        if (config->server.threadpool) {
+            threadpool_destroy(config->server.threadpool, 0);
+        }
+
+        pthread_mutex_destroy(&(config->server.lock));
+
         freeData(config);
     }
   
-    if(threadpool){
-        threadpool_destroy(threadpool, 0);
-    }
-
-    pthread_mutex_destroy(&lock);
-    
     exit(0);
 }

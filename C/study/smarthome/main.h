@@ -37,6 +37,7 @@ extern "C" {
 #include "include/event2/util.h"
 #include "include/event2/event.h"
 #include "include/event2/bufferevent.h"
+#include "include/evhttp.h"
     
     #define true 1
     #define false 0
@@ -51,9 +52,6 @@ extern "C" {
     char *confPath;
     struct config_t *config;
     
-    threadpool_t *threadpool;
-    pthread_mutex_t lock;
-    
     struct config_t {
         struct {
             char *basename;
@@ -63,6 +61,12 @@ extern "C" {
         struct {
             char *serverip;
             int serverport;
+            int webport;
+            struct event_base *base;
+            struct bufferevent *bev;
+            evutil_socket_t listener;
+            threadpool_t *threadpool;
+            pthread_mutex_t lock;
         } server;
     };
     
@@ -73,6 +77,9 @@ extern "C" {
     void read_cb(struct bufferevent *bev,void *arg);
     void write_cb(struct bufferevent *bev,void *arg);
     void error_cb(struct bufferevent *bev,short event,void *arg);
+    
+    void http_request_handle(struct evhttp_request *req,void *arg);
+    void testcb(struct evhttp_request *req,void *arg);
 
 #ifdef	__cplusplus
 }

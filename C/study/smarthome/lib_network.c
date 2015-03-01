@@ -73,3 +73,54 @@ int lib_connect_server_socket(char *SIP, int port) {
     else
         return fd;
 }
+
+int create_libevent_listen(int listen_port,int listen_backlog,void *do_accept){
+    config->server.listener = socket(AF_INET,SOCK_STREAM,0);
+    assert(config->server.listener > 0);
+    evutil_make_listen_socket_reuseable(config->server.listener);
+
+    struct sockaddr_in sin;
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = 0;
+    sin.sin_port = htons(listen_port);
+
+#ifndef WIN32
+    {
+        int one=1;
+        setsockopt(config->server.listener,SOL_SOCKET,SO_REUSEADDR,&one,sizeof(one));
+    }
+#endif
+    
+    // bind
+    if (bind(config->server.listener, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
+        perror("bind");
+        return -1;
+    }
+
+    // listen
+    if (listen(config->server.listener, listen_backlog) < 0) {
+        perror("listen");
+        return -1;
+    }
+
+    printf("Listening...\n");
+
+    // set nonblocking
+    evutil_make_socket_nonblocking(config->server.listener);
+ 
+    assert(config->server.base != NULL);
+    
+    // set listen event to add base.
+    struct event *listen_event;
+    listen_event = event_new(config->server.base, config->server.listener, EV_READ | EV_PERSIST, 
+                            do_accept, (void*) (config->server.base));
+
+    /*  或者采用如下方式
+     * struct event *listen_event;
+     * struct event_base *base = event_base_new();
+     * event_set(&listen_event,listener,EV_READ|EV_PERSIST,do_accept,(void*)base);
+     */
+    
+    event_add(listen_event, NULL);
+    return config->server.listener;
+}

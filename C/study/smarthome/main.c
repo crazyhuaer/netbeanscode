@@ -173,65 +173,32 @@ int main(int argc, char** argv) {
 //    CreateThread(TestThread);
 //    CreateThread(TestThread2);
     //////////////////////////////////////////////////////////////////////////////
-//    // test thread.
+    // test thread.
 //    for(i = 0; i < 8192; i++) {
 //        if (i%2 == 1) {
-//            threadpool_add(threadpool, TestThread, &i, 0);
+//            threadpool_add(config->server.threadpool, TestThread, &i, 0);
 //        } else {
-//            threadpool_add(threadpool, TestThread2, NULL, 0);
+//            threadpool_add(config->server.threadpool, TestThread2, NULL, 0);
 //        }
 //    }
 //    
 //    sleep(1);
     //////////////////////////////////////////////////////////////////////////////
-    // test libevent.
-    int listen_port = 9999;
-    int listen_backlog = 32;
+    // libevent.
+
+    // libevhtp
+    char *testcbdata = "zhe shi shenme";
+    struct evhttp *httpd = evhttp_new(config->server.base);
+
+    evhttp_bind_socket(httpd,"0.0.0.0",19800);
+    evhttp_set_timeout(httpd,10);
     
-    evutil_socket_t listener;
-    listener = socket(AF_INET,SOCK_STREAM,0);
-    assert(listener > 0);
-    evutil_make_listen_socket_reuseable(listener);
-
-    struct sockaddr_in sin;
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = 0;
-    sin.sin_port = htons(listen_port);
-
-    if (bind(listener, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
-        perror("bind");
-        return 1;
-    }
-
-    if (listen(listener, listen_backlog) < 0) {
-        perror("listen");
-        return 1;
-    }
-
-    printf("Listening...\n");
-
-    evutil_make_socket_nonblocking(listener);
-
-    struct event_base *base = event_base_new();
-    assert(base != NULL);
-    struct event *listen_event;
-    listen_event = event_new(base, listener, EV_READ | EV_PERSIST, do_accept, (void*) base);
-    event_add(listen_event, NULL);
-    event_base_dispatch(base);
-
-    printf("The End.");
-    return 0;
+    evhttp_set_gencb(httpd,http_request_handle,NULL);
+    evhttp_set_cb(httpd,"/hello.html",testcb,(void*)testcbdata);
+    // start event loop.
+    event_base_dispatch(config->server.base);
     
     //////////////////////////////////////////////////////////////////////////////
-    
-//    while(1){
-////        char *datas = "hello world\n";
-////        int size = send(cfd,datas,sizeof(datas),0);
-//        usleep(100000);
-//    }
-    
-    
-    
     DestorySystem();
     return (EXIT_SUCCESS);
 }
@@ -256,6 +223,13 @@ void test(Ring_T data){
     Ring_addhi(data,"U! ");
 }
 
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * 
+ * @param listener
+ * @param event
+ * @param arg
+ */
 void do_accept(evutil_socket_t listener, short event, void *arg){
     struct event_base *base = (struct event_base *)arg;
     evutil_socket_t fd;
@@ -266,20 +240,24 @@ void do_accept(evutil_socket_t listener, short event, void *arg){
         perror("accept");
         return;
     }
-    if (fd > FD_SETSIZE) { //这个if是参考了那个ROT13的例子，貌似是官方的疏漏，从select-based例子里抄过来忘了改
-        perror("fd > FD_SETSIZE\n");
-        return;
-    }
+    
+    char *cip= inet_ntoa(sin.sin_addr);
+    
+//    if (fd > FD_SETSIZE) { //这个if是参考了那个ROT13的例子，貌似是官方的疏漏，从select-based例子里抄过来忘了改
+//        perror("fd > FD_SETSIZE\n");
+//        return;
+//    }
 
-    printf("ACCEPT: fd = %u\n", fd);
+    printf("ACCEPT: fd = %u,ip = %s\n", fd,cip);
 
-    struct bufferevent *bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-    bufferevent_setcb(bev, read_cb, NULL, error_cb, arg);
-    bufferevent_enable(bev, EV_READ|EV_WRITE|EV_PERSIST);
+    evutil_make_socket_nonblocking(fd);
+    config->server.bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    bufferevent_setcb(config->server.bev, read_cb, write_cb, error_cb, arg);
+    bufferevent_enable(config->server.bev, EV_READ|EV_PERSIST);
 }
 
 void read_cb(struct bufferevent *bev, void *arg){
-#define MAX_LINE    256
+    #define MAX_LINE    256
     char line[MAX_LINE+1];
     int n;
     evutil_socket_t fd = bufferevent_getfd(bev);
@@ -290,15 +268,34 @@ void read_cb(struct bufferevent *bev, void *arg){
 
         bufferevent_write(bev, line, n);
     }
+    
+    // 这里处理收到的命令信号
+    int length = strlen("hello");
+    int ret = strncmp(line,"hello",length);
+    if(ret == 0 && (line[length] == '\r') || (line[length] == '\n') ){
+        printf("get hello!\n");
+        bufferevent_free(bev);
+        return;
+    }
+    
+    bufferevent_enable(bev, EV_WRITE | EV_PERSIST);
 }
 
 void write_cb(struct bufferevent *bev, void *arg) {
-#define MAX_LINE    256
-    char line[MAX_LINE+1];
-    int n;
     evutil_socket_t fd = bufferevent_getfd(bev);
-    
-    
+    char *buf = "hello world!\n";
+    int length = strlen(buf);
+    int size = 0,send_size=0;
+    while(size < length){
+        send_size = send(fd,buf+size,length-size,0);
+        if(send_size < 0){
+            if(errno == EAGAIN){
+                return;
+            }
+        }
+        size += send_size;
+    }
+    printf(" fd : %d,write %s size:%d\n",fd,buf,size);
 }
 
 void error_cb(struct bufferevent *bev, short event, void *arg){
@@ -314,4 +311,28 @@ void error_cb(struct bufferevent *bev, short event, void *arg){
         printf("some other error\n");
     }
     bufferevent_free(bev);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+void http_request_handle(struct evhttp_request *req,void *arg){
+    struct evbuffer *databuf = evbuffer_new();
+    evbuffer_add_printf(databuf,"hello world!");
+    
+    evhttp_send_reply_start(req,200,"OK");
+    evhttp_send_reply_chunk(req,databuf);
+    evhttp_send_reply_end(req);
+    
+    evbuffer_free(databuf);
+}
+
+void testcb(struct evhttp_request *req,void *arg){
+    char *data = (char *)arg;
+    struct evbuffer *databuf = evbuffer_new();
+    evbuffer_add_printf(databuf,data);
+    
+    evhttp_send_reply_start(req,200,"OK");
+    evhttp_send_reply_chunk(req,databuf);
+    evhttp_send_reply_end(req);
+    
+    evbuffer_free(databuf);
 }
