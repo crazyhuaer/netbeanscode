@@ -64,6 +64,8 @@ extern "C" {
             int webport;
             struct event_base *base;
             struct bufferevent *bev;
+            struct event *listen_event;
+            struct evhttp *httpd;
             evutil_socket_t listener;
             threadpool_t *threadpool;
             pthread_mutex_t lock;
@@ -79,7 +81,7 @@ extern "C" {
     void error_cb(struct bufferevent *bev,short event,void *arg);
     
     void http_request_handle(struct evhttp_request *req,void *arg);
-    void testcb(struct evhttp_request *req,void *arg);
+    void http_request_special_example(struct evhttp_request *req,void *arg);
 
 #ifdef	__cplusplus
 }

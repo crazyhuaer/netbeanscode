@@ -72,6 +72,9 @@ void InitSystemThread(int threadnumber,int queuenumber){
 }
 
 void InitSystemNetwork(){
+
+    //////////////////////////////////////////////////////////////////////////////
+    // create tcp server
     int listen_backlog = 32;
 
     int ret = create_libevent_listen(config->server.serverport,listen_backlog,do_accept);
@@ -80,6 +83,16 @@ void InitSystemNetwork(){
         DEBUG("System Can't Running with Network.\n");
         exit(-1);
     }
+    
+    //////////////////////////////////////////////////////////////////////////////
+    // create http server
+    config->server.httpd = evhttp_new(config->server.base);
+
+    evhttp_bind_socket(config->server.httpd,"0.0.0.0",config->server.webport);
+    evhttp_set_timeout(config->server.httpd,10);
+    
+    evhttp_set_gencb(config->server.httpd,http_request_handle,NULL);
+    evhttp_set_cb(config->server.httpd,"/hello",http_request_special_example,NULL);
 }
 
 // open the log file
@@ -239,8 +252,22 @@ void DestorySystem(){
 
         pthread_mutex_destroy(&(config->server.lock));
 
+        if(config->server.listen_event){
+            event_free(config->server.listen_event);
+        }
+        
+        if(config->server.httpd){
+            evhttp_free(config->server.httpd);
+        }
+
+        if(config->server.bev){
+            bufferevent_free(config->server.bev);
+        }
+        
+        if(config->server.base){
+            event_base_free(config->server.base);
+        }
+
         freeData(config);
     }
-  
-    exit(0);
 }

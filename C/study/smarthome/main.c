@@ -187,14 +187,7 @@ int main(int argc, char** argv) {
     // libevent.
 
     // libevhtp
-    char *testcbdata = "zhe shi shenme";
-    struct evhttp *httpd = evhttp_new(config->server.base);
 
-    evhttp_bind_socket(httpd,"0.0.0.0",19800);
-    evhttp_set_timeout(httpd,10);
-    
-    evhttp_set_gencb(httpd,http_request_handle,NULL);
-    evhttp_set_cb(httpd,"/hello.html",testcb,(void*)testcbdata);
     // start event loop.
     event_base_dispatch(config->server.base);
     
@@ -274,8 +267,6 @@ void read_cb(struct bufferevent *bev, void *arg){
     int ret = strncmp(line,"hello",length);
     if(ret == 0 && (line[length] == '\r') || (line[length] == '\n') ){
         printf("get hello!\n");
-        bufferevent_free(bev);
-        return;
     }
     
     bufferevent_enable(bev, EV_WRITE | EV_PERSIST);
@@ -315,24 +306,104 @@ void error_cb(struct bufferevent *bev, short event, void *arg){
 
 //////////////////////////////////////////////////////////////////////////////
 void http_request_handle(struct evhttp_request *req,void *arg){
-    struct evbuffer *databuf = evbuffer_new();
-    evbuffer_add_printf(databuf,"hello world!");
-    
-    evhttp_send_reply_start(req,200,"OK");
-    evhttp_send_reply_chunk(req,databuf);
-    evhttp_send_reply_end(req);
-    
-    evbuffer_free(databuf);
+    char output[2048] = "\0";
+    char tmp[1024];
+
+    //获取客户端请求的URI(使用evhttp_request_uri或直接req->uri)
+    const char *uri;
+    uri = evhttp_request_uri(req);
+    sprintf(tmp, "uri=%s\n", uri);
+    strcat(output, tmp);
+
+    sprintf(tmp, "uri=%s\n", req->uri);
+    strcat(output, tmp);
+    //decoded uri
+    char *decoded_uri;
+    decoded_uri = evhttp_decode_uri(uri);
+    sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
+    strcat(output, tmp);
+
+    //解析URI的参数(即GET方法的参数)
+    struct evkeyvalq params;
+    evhttp_parse_query(decoded_uri, &params);
+    sprintf(tmp, "q=%s\n", evhttp_find_header(&params, "q"));
+    const char *params_q = evhttp_find_header(&params, "q");
+    strcat(output, tmp);
+    sprintf(tmp, "s=%s\n", evhttp_find_header(&params, "s"));
+    const char *params_s = evhttp_find_header(&params, "s");
+    strcat(output, tmp);
+    free(decoded_uri);
+
+    //获取POST方法的数据
+    char *post_data = (char *) EVBUFFER_DATA(req->input_buffer);
+    sprintf(tmp, "post_data=%s\n", post_data);
+    strcat(output, tmp);
+
+    /*
+    具体的：可以根据GET/POST的参数执行相应操作，然后将结果输出
+    ...
+     */
+
+    /* 输出到客户端 */
+
+    //HTTP header
+    evhttp_add_header(req->output_headers, "Server", "my httpd v0.01");
+    evhttp_add_header(req->output_headers, "Content-Type", "text/plain; charset=UTF-8");
+    evhttp_add_header(req->output_headers, "Connection", "close");
+    //输出的内容
+    struct evbuffer *buf;
+    buf = evbuffer_new();
+    evbuffer_add_printf(buf, "It works!\n%s\nparams_q=%s,params_s=%s\n", output,params_q,params_s);
+    evhttp_send_reply(req, HTTP_OK, "OK", buf);
+    evbuffer_free(buf);
 }
 
-void testcb(struct evhttp_request *req,void *arg){
-    char *data = (char *)arg;
+void http_request_special_example(struct evhttp_request *req,void *arg){
+    char output[2048] = "\0";
+    char tmp[1024];
+
+    //获取客户端请求的URI(使用evhttp_request_uri或直接req->uri)
+    const char *uri;
+    uri = evhttp_request_uri(req);
+//    sprintf(tmp, "uri=%s\n", uri);
+//    strcat(output, tmp);
+
+//    sprintf(tmp, "uri=%s\n", req->uri);
+//    strcat(output, tmp);
+    //decoded uri
+    char *decoded_uri;
+    decoded_uri = evhttp_decode_uri(uri);
+//    sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
+//    strcat(output, tmp);
+
+    //解析URI的参数(即GET方法的参数)
+    struct evkeyvalq params;
+    evhttp_parse_query(decoded_uri, &params);
+    sprintf(tmp, "q=%s\n", evhttp_find_header(&params, "q"));
+    const char *params_q = evhttp_find_header(&params, "q");
+    strcat(output, tmp);
+    sprintf(tmp, "s=%s\n", evhttp_find_header(&params, "s"));
+    const char *params_s = evhttp_find_header(&params, "s");
+    strcat(output, tmp);
+    free(decoded_uri);
+
+//    //获取POST方法的数据
+    char *post_data = (char *) EVBUFFER_DATA(req->input_buffer);
+    sprintf(tmp, "post_data=%s\n", post_data);
+    strcat(output, tmp);
+
     struct evbuffer *databuf = evbuffer_new();
-    evbuffer_add_printf(databuf,data);
+    evbuffer_add_printf(databuf,output,"%s");
     
-    evhttp_send_reply_start(req,200,"OK");
-    evhttp_send_reply_chunk(req,databuf);
-    evhttp_send_reply_end(req);
-    
+    evhttp_send_reply(req, HTTP_OK, "OK", databuf);
     evbuffer_free(databuf);
+    
+    // kill the base loop
+    // 这其实是不应该使用的，不是特别情况，不用关闭
+//    if (params_q) {
+//        int ret = atoi(params_q);
+//        if (ret == 15) {
+//            event_base_loopbreak(config->server.base);
+//        }
+//    }
 }

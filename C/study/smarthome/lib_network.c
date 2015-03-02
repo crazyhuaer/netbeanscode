@@ -111,8 +111,7 @@ int create_libevent_listen(int listen_port,int listen_backlog,void *do_accept){
     assert(config->server.base != NULL);
     
     // set listen event to add base.
-    struct event *listen_event;
-    listen_event = event_new(config->server.base, config->server.listener, EV_READ | EV_PERSIST, 
+    config->server.listen_event = event_new(config->server.base, config->server.listener, EV_READ | EV_PERSIST, 
                             do_accept, (void*) (config->server.base));
 
     /*  或者采用如下方式
@@ -121,6 +120,6 @@ int create_libevent_listen(int listen_port,int listen_backlog,void *do_accept){
      * event_set(&listen_event,listener,EV_READ|EV_PERSIST,do_accept,(void*)base);
      */
     
-    event_add(listen_event, NULL);
+    event_add(config->server.listen_event, NULL);
     return config->server.listener;
 }
