@@ -39,6 +39,12 @@ extern "C" {
 #include "include/event2/bufferevent.h"
 #include "include/evhttp.h"
     
+//#ifndef WIN32
+//#include <arpa/inet.h>
+//#endif  //  !WIN32
+//    
+//#pragma comment(lib,"ws2_32.lib")
+    
     #define true 1
     #define false 0
     

@@ -9,9 +9,8 @@
 #include <sys/socket.h>
 #include "main.h"
 
-/*
- * 
- */
+#define MAX_LINE    256
+
 void vfree(const void*,void **,void *);
 void test(Ring_T data);
 
@@ -68,32 +67,40 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////////////////////////////
     Table_T table = Table_new(0,NULL,NULL);
     
-//    int fd = 15;
-//     
-//    int counts = 23;
-//    
-//    Table_put(table,&fd,&counts);
-//    
-//    int *values = (int *)Table_get(table,&fd);
-//    if (values) {
-//        printf("key:%d,value:%d\n",fd,*values);
-//        int count = 30;
-//        Table_put(table,&fd,&count);
-//        
-//        values = (int *)Table_get(table,&fd);
-//        if (values) {
-//            printf("key:%d,value:%d\n",fd,*values);
-//        }
-//        
-//        
-//    } else {
-//        printf("can't get value by key:%d\n",fd);
-//    }
-//
-//    int table_length = Table_length(table);
-//    printf("table length:%d\n",table_length);
-//    
-//    Table_map(table,vfree,NULL);
+    int fd = 15;
+     
+    int counts = 23;
+    
+    Table_put(table,&fd,&counts);
+    
+    int *values = (int *)Table_get(table,&fd);
+    if (values) {
+        printf("key:%d,value:%d\n",fd,*values);
+        int count = 30;
+        Table_put(table,&fd,&count);
+        
+        values = (int *)Table_get(table,&fd);
+        if (values) {
+            printf("key:%d,value:%d\n",fd,*values);
+        }   
+    } else {
+        printf("can't get value by key:%d\n",fd);
+    }
+
+    int table_length = Table_length(table);
+    printf("table length:%d\n",table_length);
+    
+    Table_remove(table,&fd);
+
+    values = (int *) Table_get(table, &fd);
+    if (!values) {
+        printf("can't get value by key:%d\n",fd);
+    }   
+    
+    table_length = Table_length(table);
+    printf("table remove fd:%d length:%d\n", fd,table_length);
+    
+    Table_map(table,vfree,NULL);
     Table_free(&table);
     //////////////////////////////////////////////////////////////////////////////
 //    Array_T array;
@@ -117,7 +124,7 @@ int main(int argc, char** argv) {
     
     Ring_add(ring2,0,"I ");
     Ring_add(ring2,0,"Love ");
-    Ring_addhi(ring2,"U! ");
+    Ring_addhi(ring2,"U!");
     sizeofring = Ring_length(ring2);
     printf("sizeofring:%d %s %s %s\n",sizeofring,(char *)Ring_get(ring2,0),\
                          (char *)Ring_get(ring2,1),(char *)Ring_get(ring2,2));
@@ -186,10 +193,10 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////////////////////////////
     // libevent.
 
-    // libevhtp
+    // evhttp
 
     // start event loop.
-    event_base_dispatch(config->server.base);
+    // event_base_dispatch(config->server.base);
     
     //////////////////////////////////////////////////////////////////////////////
     DestorySystem();
@@ -213,7 +220,7 @@ void TestThread2(void *p) {
 void test(Ring_T data){
     Ring_add(data,0,"I ");
     Ring_add(data,0,"Love ");
-    Ring_addhi(data,"U! ");
+    Ring_addhi(data,"U!");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -250,7 +257,6 @@ void do_accept(evutil_socket_t listener, short event, void *arg){
 }
 
 void read_cb(struct bufferevent *bev, void *arg){
-    #define MAX_LINE    256
     char line[MAX_LINE+1];
     int n;
     evutil_socket_t fd = bufferevent_getfd(bev);
@@ -317,6 +323,7 @@ void http_request_handle(struct evhttp_request *req,void *arg){
 
     sprintf(tmp, "uri=%s\n", req->uri);
     strcat(output, tmp);
+    
     //decoded uri
     char *decoded_uri;
     decoded_uri = evhttp_decode_uri(uri);
@@ -342,7 +349,7 @@ void http_request_handle(struct evhttp_request *req,void *arg){
     /*
     具体的：可以根据GET/POST的参数执行相应操作，然后将结果输出
     ...
-     */
+    */
 
     /* 输出到客户端 */
 
@@ -350,6 +357,7 @@ void http_request_handle(struct evhttp_request *req,void *arg){
     evhttp_add_header(req->output_headers, "Server", "my httpd v0.01");
     evhttp_add_header(req->output_headers, "Content-Type", "text/plain; charset=UTF-8");
     evhttp_add_header(req->output_headers, "Connection", "close");
+    
     //输出的内容
     struct evbuffer *buf;
     buf = evbuffer_new();
@@ -392,6 +400,11 @@ void http_request_special_example(struct evhttp_request *req,void *arg){
     sprintf(tmp, "post_data=%s\n", post_data);
     strcat(output, tmp);
 
+    //HTTP header
+    evhttp_add_header(req->output_headers, "Server", "my httpd v0.01");
+    evhttp_add_header(req->output_headers, "Content-Type", "text/plain; charset=UTF-8");
+    evhttp_add_header(req->output_headers, "Connection", "close");
+    
     struct evbuffer *databuf = evbuffer_new();
     evbuffer_add_printf(databuf,output,"%s");
     

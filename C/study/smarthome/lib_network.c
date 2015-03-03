@@ -92,14 +92,14 @@ int create_libevent_listen(int listen_port,int listen_backlog,void *do_accept){
 #endif
     
     // bind
-    if (bind(config->server.listener, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
-        perror("bind");
+    if (bind(config->server.listener, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
+        perror("bind error");
         return -1;
     }
 
     // listen
     if (listen(config->server.listener, listen_backlog) < 0) {
-        perror("listen");
+        perror("listen error");
         return -1;
     }
 

@@ -64,15 +64,14 @@ void InitConfigSystem(){
 void InitSystemThread(int threadnumber,int queuenumber){
     pthread_mutex_init(&(config->server.lock), NULL);
 
-    if ((config->server.threadpool = threadpool_create(threadnumber, queuenumber, 0)) == NULL) {
-        printf("Create thread pool error!\n");
-        DEBUG("Create thread pool error!\n");
-        exit(-1);
-    }
+//    if ((config->server.threadpool = threadpool_create(threadnumber, queuenumber, 0)) == NULL) {
+//        printf("Create thread pool error!\n");
+//        DEBUG("Create thread pool error!\n");
+//        exit(-1);
+//    }
 }
 
 void InitSystemNetwork(){
-
     //////////////////////////////////////////////////////////////////////////////
     // create tcp server
     int listen_backlog = 32;
@@ -85,12 +84,14 @@ void InitSystemNetwork(){
     }
     
     //////////////////////////////////////////////////////////////////////////////
-    // create http server
+    // create http server  
+    const char ipaddr[] = "0.0.0.0";
     config->server.httpd = evhttp_new(config->server.base);
 
-    evhttp_bind_socket(config->server.httpd,"0.0.0.0",config->server.webport);
+    evhttp_bind_socket(config->server.httpd,ipaddr,config->server.webport);
     evhttp_set_timeout(config->server.httpd,10);
     
+    // set the method to process data.
     evhttp_set_gencb(config->server.httpd,http_request_handle,NULL);
     evhttp_set_cb(config->server.httpd,"/hello",http_request_special_example,NULL);
 }
@@ -238,14 +239,6 @@ void DestorySystem(){
     CloseLogFile();
     
     if (config){   
-        if(config->system.basename){
-            freeData(config->system.basename);
-        }
-        
-        if(config->server.serverip){
-            freeData(config->server.serverip);
-        }
-
         if (config->server.threadpool) {
             threadpool_destroy(config->server.threadpool, 0);
         }
@@ -268,6 +261,14 @@ void DestorySystem(){
             event_base_free(config->server.base);
         }
 
+        if(config->system.basename){
+            freeData(config->system.basename);
+        }
+        
+        if(config->server.serverip){
+            freeData(config->server.serverip);
+        }
+        
         freeData(config);
     }
 }
