@@ -196,7 +196,7 @@ int main(int argc, char** argv) {
     // evhttp
 
     // start event loop.
-    // event_base_dispatch(config->server.base);
+    event_base_dispatch(config->server.base);
     
     //////////////////////////////////////////////////////////////////////////////
     DestorySystem();

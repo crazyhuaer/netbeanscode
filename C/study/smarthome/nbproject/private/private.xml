@@ -9,10 +9,9 @@
         <group>
             <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/lib_system.h</file>
             <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/main.c</file>
-            <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/log.h</file>
-            <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/lib_system.c</file>
             <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/main.h</file>
-            <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/log.c</file>
+            <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/lib_system.c</file>
+            <file>file:/home/topseten/NetBeansProjects/netbeanscode/C/study/smarthome/lib_network.c</file>
         </group>
     </open-files>
 </project-private>

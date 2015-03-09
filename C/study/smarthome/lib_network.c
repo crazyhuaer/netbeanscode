@@ -123,3 +123,53 @@ int create_libevent_listen(int listen_port,int listen_backlog,void *do_accept){
     event_add(config->server.listen_event, NULL);
     return config->server.listener;
 }
+
+int create_libevent_connect_client(){
+    int socketfd;
+
+    struct bufferevent *event;
+    
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof (addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(config->server.serverport);
+
+    if (inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr) <= 0) {
+        printf("inet_pton");
+        return 1;
+    }
+
+    if ((event = bufferevent_socket_new(config->server.base, -1, BEV_OPT_CLOSE_ON_FREE)) == NULL) {
+        return 1;
+    }
+
+    if ((socketfd = bufferevent_socket_connect(event, (struct sockaddr *) &addr, sizeof (addr))) < 0) {
+        return 1;
+    }
+
+    bufferevent_setcb(event, buff_input_cb, NULL, buff_ev_cb, config->server.base);
+    bufferevent_enable(event, EV_READ);
+    return 0;
+}
+
+static void buff_input_cb(struct bufferevent *bev, void *ctx)
+{
+        char buf[4096];
+        int len;
+        struct evbuffer *input = bufferevent_get_input(bev);
+
+        len = evbuffer_remove(input, buf, sizeof(buf));
+        buf[len] = '\0';
+
+        printf("Message: %s\n", buf);
+}
+
+static void buff_ev_cb(struct bufferevent *bev, short events, void *ctx)
+{
+
+        if (events & BEV_EVENT_CONNECTED) {
+                printf("Server is connected!\n");
+        } else if (events & BEV_EVENT_ERROR) {
+                printf("Connect server error!\n");
+        }
+}

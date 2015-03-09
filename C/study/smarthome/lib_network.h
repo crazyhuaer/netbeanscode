@@ -24,8 +24,13 @@ extern "C" {
 #include <string.h>
 #include <syslog.h>
 #include "log.h"
+#include "include/event2/bufferevent.h"
 
     int lib_create_server_socket(const char* pIp, int nPort);
+    int create_libevent_connect_client();
+    
+    static void buff_input_cb(struct bufferevent *bev, void *ctx);
+    static void buff_ev_cb(struct bufferevent *bev, short events, void *ctx);
 
 #ifdef	__cplusplus
 }

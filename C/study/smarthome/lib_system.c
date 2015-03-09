@@ -74,14 +74,18 @@ void InitSystemThread(int threadnumber,int queuenumber){
 void InitSystemNetwork(){
     //////////////////////////////////////////////////////////////////////////////
     // create tcp server
-    int listen_backlog = 32;
-
-    int ret = create_libevent_listen(config->server.serverport,listen_backlog,do_accept);
-    if(ret <= 0){
-        printf("System Can't Running with Network.\n");
-        DEBUG("System Can't Running with Network.\n");
-        exit(-1);
-    }
+//    int listen_backlog = 32;
+//
+//    int ret = create_libevent_listen(config->server.serverport,listen_backlog,do_accept);
+//    if(ret <= 0){
+//        printf("System Can't Running with Network.\n");
+//        DEBUG("System Can't Running with Network.\n");
+//        exit(-1);
+//    }
+    
+    //////////////////////////////////////////////////////////////////////////////
+    // create connect client
+    int ret = create_libevent_connect_client();
     
     //////////////////////////////////////////////////////////////////////////////
     // create http server  
@@ -104,12 +108,11 @@ void InitLogSystem(){
 }
 
 void sig_handler(int signo) {
-
     switch (signo) {
         case SIGINT:    // interrupt the programe
         {
             ERROR("%s", "received SIGINT\n");
-            DestorySystem();
+            event_base_loopbreak(config->server.base);
             break;
         }
         case SIGPIPE:   // the server is out of connect
@@ -138,7 +141,8 @@ void sig_handler(int signo) {
             sigemptyset(&x);
             sigaddset(&x, SIGHUP);
             sigprocmask(SIG_UNBLOCK, &x, NULL);
-
+            event_base_loopbreak(config->server.base);
+            DestorySystem();
 //            const char *exepath = newMultiString("%s%s", config->system.basename, "smarthome");
 //            execl(exepath, NULL);
   
@@ -224,6 +228,7 @@ pthread_t CreateThread(void *ThreadFunction) {
  * 
  */
 void DestorySystem(){
+    
     if (log_path) {
         freeData(log_path);
     }
@@ -252,7 +257,7 @@ void DestorySystem(){
         if(config->server.httpd){
             evhttp_free(config->server.httpd);
         }
-
+        
         if(config->server.bev){
             bufferevent_free(config->server.bev);
         }
