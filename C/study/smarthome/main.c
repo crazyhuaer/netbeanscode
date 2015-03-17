@@ -5,8 +5,6 @@
  * Created on December 28, 2014, 11:17 PM
  */
 
-#include <unistd.h>
-#include <sys/socket.h>
 #include "main.h"
 
 #define MAX_LINE    256

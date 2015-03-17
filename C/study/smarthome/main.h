@@ -15,7 +15,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-
+#include <unistd.h>
+    
 //#define NDEBUG
 #include <assert.h>
     
@@ -34,10 +35,10 @@ extern "C" {
 #include "cii/arrayrep.h"
 #include "cii/except.h"
 #include "threadpool.h"
-#include "include/event2/util.h"
-#include "include/event2/event.h"
-#include "include/event2/bufferevent.h"
-#include "include/evhttp.h"
+#include "include.x86/event2/util.h"
+#include "include.x86/event2/event.h"
+#include "include.x86/event2/bufferevent.h"
+#include "include.x86/evhttp.h"
     
 //#ifndef WIN32
 //#include <arpa/inet.h>
