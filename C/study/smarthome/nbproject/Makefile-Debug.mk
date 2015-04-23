@@ -73,7 +73,7 @@ LDLIBSOPTIONS=-Llib.x86
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/smarthome: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/smarthome ${OBJECTFILES} ${LDLIBSOPTIONS} -pthread -levent
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/smarthome ${OBJECTFILES} ${LDLIBSOPTIONS} -pthread -levent -lmemcached
 
 ${OBJECTDIR}/base.o: base.c 
 	${MKDIR} -p ${OBJECTDIR}

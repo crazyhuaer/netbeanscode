@@ -125,7 +125,7 @@
           <linkerAddLib>
             <pElem>lib.x86</pElem>
           </linkerAddLib>
-          <commandLine>-pthread -levent</commandLine>
+          <commandLine>-pthread -levent -lmemcached</commandLine>
         </linkerTool>
       </compileType>
       <item path="base.c" ex="false" tool="0" flavor2="0">
@@ -268,9 +268,9 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
-          <commandlineTool>mips-openwrt-linux-gcc</commandlineTool>
+          <commandlineTool>gcc</commandlineTool>
           <incDir>
-            <pElem>include</pElem>
+            <pElem>include.x86</pElem>
           </incDir>
         </cTool>
         <ccTool>
@@ -284,9 +284,9 @@
         </asmTool>
         <linkerTool>
           <linkerAddLib>
-            <pElem>lib</pElem>
+            <pElem>lib.x86</pElem>
           </linkerAddLib>
-          <commandLine>-pthread -levent</commandLine>
+          <commandLine>-pthread -levent -lmemcached</commandLine>
         </linkerTool>
       </compileType>
       <item path="base.c" ex="false" tool="0" flavor2="0">

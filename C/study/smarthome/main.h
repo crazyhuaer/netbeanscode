@@ -39,6 +39,7 @@ extern "C" {
 #include "include.x86/event2/event.h"
 #include "include.x86/event2/bufferevent.h"
 #include "include.x86/evhttp.h"
+#include "include.x86/libmemcached/memcached.h"
     
 //#ifndef WIN32
 //#include <arpa/inet.h>

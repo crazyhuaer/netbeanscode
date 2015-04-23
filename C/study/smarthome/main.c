@@ -193,6 +193,47 @@ int main(int argc, char** argv) {
 
     // evhttp
 
+    
+    // libmemcached
+    memcached_server_st *servers = NULL;
+    memcached_st *memc;
+    memcached_return rc;
+    char *key= "keystring";
+    char *value= "keyvalue";
+
+    //memcached_server_st *memcached_servers_parse (char *server_strings);
+    memc= memcached_create(NULL);
+
+    servers= memcached_server_list_append(servers, "localhost", 11211, &rc);
+    rc= memcached_server_push(memc, servers);
+
+    if (rc == MEMCACHED_SUCCESS)
+      fprintf(stderr,"Added server successfully\n");
+    else
+      fprintf(stderr,"Couldn't add server: %s\n",memcached_strerror(memc, rc));
+
+    rc= memcached_set(memc, key, strlen(key), value, strlen(value), (time_t)0, (uint32_t)0);
+
+    if (rc == MEMCACHED_SUCCESS)
+      fprintf(stderr,"Key stored successfully\n");
+    else
+      fprintf(stderr,"Couldn't store key: %s\n",memcached_strerror(memc, rc));
+
+//
+//    rc = memcached_mget(memc, keys, key_length, 1);
+//
+//    if (rc == MEMCACHED_SUCCESS) {
+//        while ((return_value = memcached_fetch(memc, return_key, &return_key_length,
+//                &return_value_length, &flags, &rc)) != NULL) {
+//            if (rc == MEMCACHED_SUCCESS) {
+//                fprintf(stderr, "Key %s returned %s\n", return_key, return_value);
+//            }
+//        }
+//    }
+
+    
+    
+    
     // start event loop.
     event_base_dispatch(config->server.base);
     
